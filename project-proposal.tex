@@ -1,0 +1,70 @@
+\documentclass{article}
+
+% Frequently Asked Questions, Notes, ....
+% 01) You can use Czech or English to fill in the template.
+% 02) Fill in the metadata section.
+%
+
+\usepackage[a-2u]{pdfx}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage[ddmmyyyy]{datetime}
+\usepackage{geometry}
+
+\renewcommand{\dateseparator}{.}
+\renewcommand{\baselinestretch}{1.5}
+
+\geometry{margin=2cm}
+
+\def\ResearchProject{Research project}
+\def\CompanyProject{Company project}
+\def\SoftwareProject{Software project}
+
+% METADATA SECTION START
+\def\StudentsFullName{Ailish Stormwind, Johny Colaborator}
+\def\Obor{Computer Science - Software and Data Engineering}
+\def\ProjetTitle{My research project}
+% Use "\ResearchProject", "\CompanyProject", \SoftwareProject"
+\def\ProjectType{\ResearchProject}
+\def\SupervisorFullName{Chuck Norris}
+\def\ConsultantsFullName{Somemebody Else}
+\def\ExpectedStart{2024-01-01}
+\def\ExpectedEnd{2024-08-31 }
+% METADATA SECTION END
+
+\title{\ProjetTitle}
+\author{\StudentFullName}
+
+\begin{document}
+
+\centerline{\Large \textbf{Proposal of team software project}}
+\centerline{ \textbf{Department of Software Engineering}}
+\centerline{ \textbf{Faculty of Mathematics and Physics, Charles University}}
+\bigskip
+{\noindent\begin{tabular*}{\textwidth}{ >{\raggedleft}m{4cm} l}
+ {\bf Solvers:} & \StudentsFullName \\
+ {\bf Study program:} & \Obor \\
+ & \\
+ {\bf Project title:} & \ProjetTitle \\
+ {\bf Project type:} & \ProjectType \\
+ & \\
+ {\bf Supervisor:} & \SupervisorFullName \\
+ {\bf Consultants:} & \ConsultantsFullName \\
+ & \\
+ {\bf Expected start:} & \ExpectedStart \\
+ {\bf Expected end:} & \ExpectedEnd \\
+\end{tabular*}}
+
+\section{Introduction}
+In this section, introduce the team and briefly introduce the project.
+Explain the expected objectives of the projects.
+
+\subsection{Relation to other projects}
+If there are any other projects that your project is connected to, please briefly introduce them and comment on the connection.
+
+\section{Project description}
+Draft of a project proposal - a couple of paragraphs.
+If you are unsure what to write here, consider writing about users, stakeholders, and the functionality.
+Focus on the value that your software creates.
+
+\end{document}
