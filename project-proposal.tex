@@ -66,7 +66,7 @@ The core goal of the project is to establish modern processes and an architectur
   \item \textbf{Architectural foundation and reusable toolkit.} Front-end components and code abstractions for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
   \item \textbf{Licensing data migration.} Moving licensing configuration from an XML file into the Caché backend, with the related internal tooling created or rewritten. Preparation for reuse across other M-line products is in scope; implementation in those products is not.
   \item \textbf{Client-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
-  \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directy in or by the shell. At least one demonstrative mini-app will be delivered.
+  \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directly in or by the shell. At least one demonstrative mini-app will be delivered.
   \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope.
 \end{itemize}
 
@@ -82,7 +82,10 @@ The project is being developed alongside several existing M-line projects with w
 
 \section{Project description}
 
-\textbf{Stakeholders.} The primary stakeholder is M-line software, which will reuse the resulting foundation to migrate further agendas after the project ends. The new infrastructure will make (re)implementing new agendas easier in a number of ways:
+\textbf{Stakeholders and value.} The primary stakeholder is M-line software, the company developing and maintaining EDISON; the resulting foundation will be reused by in-house developers to migrate further agendas after the project ends. The secondary stakeholders are the customer organizations operating EDISON installations, who will benefit from the overall improvements in the development process (speed, testing) and will receive a more modern user experience.
+
+\medskip
+\noindent The new infrastructure will make (re)implementing new agendas easier in a number of ways:
 \begin{itemize}
     \item The newly achieved testability will make the development process quicker and more accurate by requiring less manual testing and protecting against regression.
     \item The architecture will (at least partially) enforce testability and responsibility separation. This separation is especially murky in parts of the old codebase, which makes modifications to it very difficult.
@@ -100,8 +103,6 @@ Other than the benefits for the new agendas, the previously mentioned points tha
     \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simply too tangled to be modified.
     \item The old shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licencing, updating and the agendas themselves.
 \end{itemize}
-
-The secondary stakeholders are the customer organizations operating EDISON installations. They will benefit from the overall improvements in the resulting development process (speed, testing) and will also receive a more modern user experience.
 
 \medskip
 \noindent \textbf{AI-augmented development.} The project is developed with extensive use of AI coding assistants throughout. Rather than treating AI tooling as a passive convenience, the project will explicitly document the patterns and guardrails that make it productive: project memory in the form of in-repo guidance files, verification pipelines before accepting generated changes, and a preference for explicit and strongly typed dependency injection over hidden global states. This will increase the quality of the generated code and improve the whole process, including the code review. \textcolor{red}{(Observations on where the assistant accelerates the work and where it consistently fails will be collected throughout and summarized as part of the project's final documentation.?)}
