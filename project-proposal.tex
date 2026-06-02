@@ -5,6 +5,7 @@
 \usepackage{array}
 \usepackage[ddmmyyyy]{datetime}
 \usepackage{geometry}
+\usepackage{xcolor}
 
 \renewcommand{\dateseparator}{.}
 \renewcommand{\baselinestretch}{1.5}
@@ -51,6 +52,8 @@
 
 \section{Introduction}
 
+\textcolor{red}{Červeně jsou věci u kterých si nejsem jistý jestli je v záměru mít}
+
 The author is a Master's student of Software and Data Engineering at the Department of Software Engineering, MFF UK. The project takes place at M-line software s.r.o., a Czech software company primarily developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framework + WinForms client onto a more modern stack of .NET Core + WPF.
 
 The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- both serves as a working product and as a demonstration for the processes and patterns being introduced.
@@ -62,18 +65,17 @@ The core goal of the project is to establish modern processes and an architectur
   \item A test-first development culture supported by unit-testing infrastructure (xUnit, NSubstitute in .NET, and native tools in Caché). The legacy system has effectively no test coverage, so this is a new effort on the updated stack.
   \item An architectural foundation that future agendas will follow. A reusable toolkit of both front-end components and code abstractions enabling rapid construction of new agenda functionalities.
   \item Backwards compatibility with older agendas, included in the mentioned toolkit.
-  \item Migration of licencing data (what does the buyer of the software have access to, for how many users) from a lone singular example of a XML config file into the Caché backend and a modification/creation of related internal tools. Preparation of the whole system to be possibly used in the future in other company products, but the implementation of that itself is out of the scope of the project.
+  \item Migration of licencing data (what does the buyer of the software have access to, for how many users) from a lone singular example of an XML config file into the Caché backend and a modification/creation of related internal tools. Preparation of the whole system to be possibly used in the future in other company products, but the implementation of that itself is out of the scope of the project.
   \item A client-side update mechanism modernization and probably a whole recreation.
   \item Creation of a modernized shell with the similar responsibilities as the old shell, but in the new infrastructure and with special attention paid to maintainability and extensibility.
   \item Creation of a system that will let agendas define a sort of a mini-app, that will be, optionally, based on the user settings, displayed by/in the shell itself. The old shell has only a limited capability in this, while the new one will make use of the full options WPF provides in comparison to WinForms. These mini-apps will serve as reminders and summaries for users who use multiple agendas in the system.
   \item A small demo of at least one agenda mini-app that will demonstrate the previous point. The agenda itself won't be rewritten in full, just the mini-app will be, as part of the project.
-  \item A pilot deployment of the mentioned modernized client shell first on all developer workstations, then a parallel deployment to all users, and eventual replacement of the old client. Modernization of agendas is, however, out of the scope of the project.
-  \item Exploration and experimentation with different AI coding agent approaches, including creation of relevant documentation and other persistent constructs that maximize the utility of these tools.
+  \item A pilot deployment of the mentioned modernized client shell first on all developer workstations, then a parallel deployment to all users, and eventual replacement of the old shell. Modernization of agendas is, however, out of the scope of the project.
 \end{itemize}
 
 \subsection{Relation to other projects}
 
-EDISON 2 is being developed alongside several existing M-line projects with which it must coexist:
+The project is being developed alongside several existing M-line projects with which it must coexist:
 
 \begin{itemize}
   \item \textbf{Legacy EDISON} (VB/C\# .NET Framework WinForms) -- the production system that is the backbone of the whole system. The modernized version will run against the same Caché backend, share the general idea of responsibilities and will incrementally take over selected agendas. No breaking changes to the legacy contract are permitted during the transition.
@@ -88,7 +90,7 @@ EDISON 2 is being developed alongside several existing M-line projects with whic
     \item The newly achieved testability will make the development process quicker and more accurate by requiring less manual testing and protecting against regression.
     \item The architecture will (at least partially) enforce testability and responsibility separation. This separation is especially murky in parts of the old codebase, which makes modifications to it very difficult.
     \item The miniapps will allow the agendas to express themselves and the important issues in them in a freer way.
-    \item The new stack will be much more supportive to AI coding assistants, both by the nature of the technologies used (WinForms UI definitions are a notorious problem) and the mentioned testability and architecture benefits.
+    \item The new stack will be much more supportive of AI coding assistants, both by the nature of the technologies used (WinForms UI definitions are a notorious problem) and the mentioned testability and architecture benefits.
 \end{itemize}
 
 Other than the benefits for the new agendas, the previously mentioned points that generally fall under the umbrella of the shell will be improved and will be rid of a number of pain points (which slow down development):
@@ -103,4 +105,7 @@ Other than the benefits for the new agendas, the previously mentioned points tha
 \end{itemize}
 
 The secondary stakeholders are the customer organizations operating EDISON installations. They will benefit from the overall improvements in the resulting development process (speed, testing) and will also receive a more modern user experience.
+
+\medskip
+\noindent \textbf{AI-augmented development.} The project is developed with extensive use of AI coding assistants throughout. Rather than treating AI tooling as a passive convenience, the project will explicitly document the patterns and guardrails that make it productive: project memory in the form of in-repo guidance files, verification pipelines before accepting generated changes, and a preference for explicit and strongly typed dependency injection over hidden global states. This will increase the quality of the generated code and improve the whole process, including the code review. \textcolor{red}{(Observations on where the assistant accelerates the work and where it consistently fails will be collected throughout and summarized as part of the project's final documentation.?)}
 \end{document}
