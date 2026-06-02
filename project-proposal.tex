@@ -62,15 +62,12 @@ The core goal of the project is to establish modern processes and an architectur
 \noindent The expected outcomes of the project:
 
 \begin{itemize}
-  \item A test-first development culture supported by unit-testing infrastructure (xUnit, NSubstitute in .NET, and native tools in Caché). The legacy system has effectively no test coverage, so this is a new effort on the updated stack.
-  \item An architectural foundation that future agendas will follow. A reusable toolkit of both front-end components and code abstractions enabling rapid construction of new agenda functionalities.
-  \item Backwards compatibility with older agendas, included in the mentioned toolkit.
-  \item Migration of licencing data (what does the buyer of the software have access to, for how many users) from a lone singular example of an XML config file into the Caché backend and a modification/creation of related internal tools. Preparation of the whole system to be possibly used in the future in other company products, but the implementation of that itself is out of the scope of the project.
-  \item A client-side update mechanism modernization and probably a whole recreation.
-  \item Creation of a modernized shell with the similar responsibilities as the old shell, but in the new infrastructure and with special attention paid to maintainability and extensibility.
-  \item Creation of a system that will let agendas define a sort of a mini-app, that will be, optionally, based on the user settings, displayed by/in the shell itself. The old shell has only a limited capability in this, while the new one will make use of the full options WPF provides in comparison to WinForms. These mini-apps will serve as reminders and summaries for users who use multiple agendas in the system.
-  \item A small demo of at least one agenda mini-app that will demonstrate the previous point. The agenda itself won't be rewritten in full, just the mini-app will be, as part of the project.
-  \item A pilot deployment of the mentioned modernized client shell first on all developer workstations, then a parallel deployment to all users, and eventual replacement of the old shell. Modernization of agendas is, however, out of the scope of the project.
+  \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \texttt{\%UnitTest}), establishing a test-first culture absent from the legacy stack.
+  \item \textbf{Architectural foundation and reusable toolkit.} Front-end components and code abstractions for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
+  \item \textbf{Licensing data migration.} Moving licensing configuration from an XML file into the Caché backend, with the related internal tooling created or rewritten. Preparation for reuse across other M-line products is in scope; implementation in those products is not.
+  \item \textbf{Client-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
+  \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directy in or by the shell. At least one demonstrative mini-app will be delivered.
+  \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope.
 \end{itemize}
 
 \subsection{Relation to other projects}
