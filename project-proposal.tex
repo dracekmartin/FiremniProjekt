@@ -1,10 +1,5 @@
 \documentclass{article}
 
-% Frequently Asked Questions, Notes, ....
-% 01) You can use Czech or English to fill in the template.
-% 02) Fill in the metadata section.
-%
-
 \usepackage[a-2u]{pdfx}
 \usepackage[utf8]{inputenc}
 \usepackage{array}
@@ -21,23 +16,22 @@
 \def\SoftwareProject{Software project}
 
 % METADATA SECTION START
-\def\StudentsFullName{Ailish Stormwind, Johny Colaborator}
+\def\StudentsFullName{Bc. Martin Hubata}
 \def\Obor{Computer Science - Software and Data Engineering}
-\def\ProjetTitle{My research project}
-% Use "\ResearchProject", "\CompanyProject", \SoftwareProject"
-\def\ProjectType{\ResearchProject}
-\def\SupervisorFullName{Chuck Norris}
-\def\ConsultantsFullName{Somemebody Else}
-\def\ExpectedStart{2024-01-01}
-\def\ExpectedEnd{2024-08-31 }
+\def\ProjetTitle{Development foundation and processes for legacy transportation software modernization}
+\def\ProjectType{\CompanyProject}
+\def\SupervisorFullName{[Supervisor TBD]}
+\def\ConsultantsFullName{[Industry consultant from M-line software s.r.o. -- TBD]}
+\def\ExpectedStart{[TBD]}
+\def\ExpectedEnd{[TBD]}
 % METADATA SECTION END
 
 \title{\ProjetTitle}
-\author{\StudentFullName}
+\author{\StudentsFullName}
 
 \begin{document}
 
-\centerline{\Large \textbf{Proposal of team software project}}
+\centerline{\Large \textbf{Proposal of company software project}}
 \centerline{ \textbf{Department of Software Engineering}}
 \centerline{ \textbf{Faculty of Mathematics and Physics, Charles University}}
 \bigskip
@@ -56,15 +50,57 @@
 \end{tabular*}}
 
 \section{Introduction}
-In this section, introduce the team and briefly introduce the project.
-Explain the expected objectives of the projects.
+
+The author is a Master's student of Software and Data Engineering at the Department of Software Engineering, MFF UK. The project takes place at M-line software s.r.o., a Czech software company primarily developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framewrok + WinForms client onto a more modern stack of .NET Core + WPF.
+
+The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- both serves as a working product and as a demonstration for the processes and patterns being introduced.
+
+\medskip
+\noindent The expected outcomes of the project:
+
+\begin{itemize}
+  \item A test-first development culture supported by unit-testing infrastructure (xUnit, NSubstitute in .NET, and native tools in Caché). The legacy system has effectively no test coverage, so this is a new effort on the updated stack.
+  \item An architectural foundation that future agendas will follow. A reusable toolkit of both front-end components and code abstractions enabling rapid construction of new agenda functionalities.
+  \item Backwards compatibility with older agendas, included in the mentioned toolkit.
+  \item Migration of licencing data (what does the buyer of the software have access to, for how many user) from a lone singular example of a XML config file into the Caché backend and a modification/creation of related internal tools. Preparation of the whole system to be possibly used in the future in other company products, but the implementation of that itself is out of the scope of the project.
+  \item A client-side update mechanism modernization and probably a whole recreation.
+  \item Creation of a modernized shell with the similar responsibilities as the old shell, but in the new infrastructure and with special attention paid to maintainability and extensibility.
+  \item Creation of a system that will let agendas define a sort of a mini-app, that will be, optionally, based on the user settings, displayed by/in the shell itself. The old shell has only a limited capability in this, while the new one will make use of the full options WPF provides in comparison to WinForms. These mini-apps will serve as reminders and summaries for users who use multiple agendas in the system.
+  \item A small demo of at least one agenda mini-app that will demonstrate the previous point. The agenda itself won't be rewritten in full, just the mini-app will be, as part of the project.
+  \item A pilot deployment of the mentioned modernized client shell first on all developer workstations, then a parallel deployment to all users, and eventual replacement of the old client. Modernization of agendas is, however, out of the scope of the project.
+  \item Exploration and experimentation with different AI coding agent approaches, including creation of relevant documentation and other persistent constructs that maximize the utility of these tools.
+\end{itemize}
 
 \subsection{Relation to other projects}
-If there are any other projects that your project is connected to, please briefly introduce them and comment on the connection.
+
+EDISON 2 is being developed alongside several existing M-line projects with which it must coexist:
+
+\begin{itemize}
+  \item \textbf{Legacy EDISON} (VB/C\# .NET Framework WinForms) -- the production system that is the backbone of the whole system. The modernized version will run against the same Caché backend, share the general idea of responsibilities and will incrementally take over selected agendas. No breaking changes to the legacy contract are permitted during the transition.
+  \item \textbf{InterSystems Caché backend} -- the shared data store. It is used by all of the company's projects. Many of the project's architectural decisions will be influenced by the fact that our deployment process is much faster when deploying just a Caché update (and not the .NET). This is impossible to change, due to the unnegotiable compatibility with the old agendas. A concrete example of this is the licencing. However, many lower-level decisions, like those in the toolkit for developers, will also be influenced by this fact. 
+  \item \textbf{TemplateDesigner} -- a WPF agenda that concers document (printable timetables, invoices...) already written (by a colleague) partially in the new stack. It will actively influence what takes priority during development and will serve (for the parts done in time for the TemplateDesigner needs) as a second consumer validating the toolkit design (other than the shell itself).
+\end{itemize}
 
 \section{Project description}
-Draft of a project proposal - a couple of paragraphs.
-If you are unsure what to write here, consider writing about users, stakeholders, and the functionality.
-Focus on the value that your software creates.
 
+\textbf{Stakeholders.} The primary stakeholder is M-line software, which will reuse the resulting foundation to migrate further agendas after the project ends. The new infrastructure will make (re)implementing new agendas easier in a number of ways:
+\begin{itemize}
+    \item The newly achieved testability will make the development process quicker and more accurate by requiring less manual testing and protecting against regression.
+    \item The architecture will (at least partially) enforce testability and responsibility separation. This separation is especially murky in parts of the old codebase, which makes modifications to it very difficult.
+    \item The miniapps will allow the agendas to express themselves and the important issues in them in a freer way.
+    \item The new stack will be much more supportive to AI coding assistants, both by the nature of the technologies used (WinForms UI definitions are a notorious problem) and the mentioned testability and architecture benefits.
+\end{itemize}
+
+Other than the benefits for the new agendas, the previously mentioned points that generally fall under the umbrella of the shell will be improved and will be rid of a number of pain points (which slow down development):
+\begin{itemize}
+    \item Modernization of licensing will allow us to extend the system for new features. But even the old functionalities will be made more user-friendly, with the users being:
+    \begin{itemize}
+        \item Developers, when they need to add or modify the relationships between modules that they have developed.
+        \item Licenser (still a company employee), who will be able to use a more modern tool to express the constraints coming from agremeents with end users more easily. The tool will be more in line with other tools the company has recently developed.
+    \end{itemize}
+    \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simlpy too tangled to be modified.
+    \item The new shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licencing, udpating and the agendas themselves.
+\end{itemize}
+
+The Secondary stakeholders are the customer organizations operating EDISON installations. They will benefit from the overall improvements in the resulting development process (speed, testing) and will also receive a more modern user experience.
 \end{document}
