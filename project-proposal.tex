@@ -73,9 +73,9 @@ The core goal of the project is to establish modern processes and an architectur
 The project is being developed alongside several existing M-line projects with which it must coexist:
 
 \begin{itemize}
-  \item \textbf{Legacy EDISON} (VB/C\# .NET Framework WinForms) -- the production system that is the backbone of the whole system. The modernized version will run against the same Caché backend, share the general idea of responsibilities and will incrementally take over selected agendas. No breaking changes to the legacy contract are permitted during the transition.
-  \item \textbf{InterSystems Caché backend} -- the shared data store. It is used by all of the company's projects. Many of the project's architectural decisions will be influenced by the fact that our deployment process is much faster when deploying just a Caché update (and not the .NET). This is impossible to change, due to the non-negotiable compatibility with the old agendas. A concrete example of this is the licencing. However, many lower-level decisions, like those in the toolkit for developers, will also be influenced by this fact. 
-  \item \textbf{TemplateDesigner} -- a WPF agenda that concerns documents (printable timetables, invoices, etc.) already written (by a colleague) partially in the new stack. It will actively influence what takes priority during development and will serve (for the parts done in time for the TemplateDesigner needs) as a second consumer validating the toolkit design (other than the shell itself).
+  \item \textbf{Legacy EDISON} (VB/C\# .NET Framework WinForms) -- the production system currently running at customer sites. The modernized version will run against the same Caché backend, share the general idea of responsibilities and will incrementally take over selected agendas. No breaking changes to the legacy contract are permitted during the transition.
+  \item \textbf{InterSystems Caché backend} -- the shared data store. It is used by all of the company's projects. Many of the project's architectural decisions will be influenced by the fact that our deployment process is much faster when deploying just a Caché update (and not the .NET). This is impossible to change, due to the non-negotiable compatibility with the old agendas. A concrete example of this is the licensing. However, many lower-level decisions, like those in the toolkit for developers, will also be influenced by this fact. 
+  \item \textbf{TemplateDesigner} -- a WPF agenda concerning documents (printable timetables, invoices, etc.), already written by a colleague partially in the new stack. It serves as a second consumer validating the toolkit design (alongside the shell itself); its needs will influence which parts of the toolkit are prioritized.
 \end{itemize}
 
 \section{Project description}
@@ -88,9 +88,9 @@ The project is being developed alongside several existing M-line projects with w
 \medskip
 \noindent The new infrastructure will make (re)implementing new agendas easier in a number of ways:
 \begin{itemize}
-    \item The newly achieved testability will make the development process quicker and more accurate by requiring less manual testing and protecting against regression.
+    \item Testability reduces manual regression checking and protects against breaks during refactoring.
     \item The architecture will (at least partially) enforce testability and responsibility separation. This separation is especially murky in parts of the old codebase, which makes modifications to it very difficult.
-    \item The miniapps will allow the agendas to express themselves and the important issues in them in a freer way.
+    \item Mini-apps let agendas surface key state and tasks directly in the shell.
     \item The new stack will be much more supportive of AI coding assistants, both by the nature of the technologies used (WinForms UI definitions are a notorious problem) and the mentioned testability and architecture benefits.
 \end{itemize}
 
@@ -102,7 +102,7 @@ Other than the benefits for the new agendas, the previously mentioned points tha
         \item Licenser (company employee creating/modifying licenses), who will be able to use a more modern tool to express the constraints coming from agreements with end users more easily. The tool will be more in line with other tools the company has recently developed.
     \end{itemize}
     \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simply too tangled to be modified.
-    \item The old shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licencing, updating and the agendas themselves.
+    \item The old shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licensing, updating and the agendas themselves.
 \end{itemize}
 
 \medskip
