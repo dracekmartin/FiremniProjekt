@@ -6,6 +6,7 @@
 \usepackage[ddmmyyyy]{datetime}
 \usepackage{geometry}
 \usepackage{xcolor}
+\usepackage{tikz}
 
 \renewcommand{\dateseparator}{.}
 \renewcommand{\baselinestretch}{1.5}
@@ -54,7 +55,7 @@
 
 The author works for M-line software as a software engineer primarily on the EDISON product line, integrated into the team's standard development practices. The ``academic team'' for the project is this M-line development team. M-line is a Czech software company developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framework + WinForms client onto a more modern stack of .NET Core + WPF.
 
-The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- both serves as a working product and as a demonstration for the processes and patterns being introduced.
+The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and a demonstration of the processes and patterns being introduced.
 
 \medskip
 \noindent The expected outcomes of the project:
@@ -86,7 +87,7 @@ The project is being developed alongside several existing M-line projects with w
 \noindent \textbf{Stakeholders and value.} The primary stakeholder is M-line software, the company developing and maintaining EDISON; the resulting foundation will be reused by in-house developers to migrate further agendas after the project ends. The secondary stakeholders are the customer organizations operating EDISON installations, who will benefit from the overall improvements in the development process (speed, testing) and will receive a more modern user experience.
 
 \medskip
-\noindent The new infrastructure will make (re)implementing new agendas easier in a number of ways:
+\noindent The new foundation and toolkit will make (re)implementing new agendas easier in a number of ways:
 \begin{itemize}
     \item Testability reduces manual regression checking and protects against breaks during refactoring.
     \item The architecture will (at least partially) enforce testability and responsibility separation. This separation is especially murky in parts of the old codebase, which makes modifications to it very difficult.
