@@ -61,12 +61,12 @@ The core goal of the project is to establish modern processes and an architectur
 \noindent The expected outcomes of the project:
 
 \begin{itemize}
-  \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \texttt{\%UnitTest}), establishing a test-first culture absent from the legacy stack.
+  \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \texttt{\%UnitTest}), establishing a test-first culture absent from the legacy stack. Concretely, all public APIs in the toolkit and shell ship with unit tests, test patterns are documented for reuse by future agenda implementations, and automated test execution is part of the development workflow.
   \item \textbf{Architectural foundation and reusable toolkit.} Front-end components and code abstractions for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
   \item \textbf{Licensing data migration.} Moving licensing configuration from an XML file into the Caché backend, with the related internal tooling created or rewritten. Preparation for reuse across other M-line products is in scope; implementation in those products is not.
   \item \textbf{Both client and server-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
   \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directly in or by the shell. At least one demonstrative mini-app will be delivered.
-  \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope.
+  \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope. Concretely, success means all M-line developer workstations using the new shell as their default daily tool, at least one customer pilot site running the new shell in parallel with the legacy, and all legacy agendas remaining launchable through the new shell.
 \end{itemize}
 
 \subsection{Relation to other projects}
