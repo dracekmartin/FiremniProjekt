@@ -64,7 +64,7 @@ The core goal of the project is to establish modern processes and an architectur
   \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \texttt{\%UnitTest}), establishing a test-first culture absent from the legacy stack.
   \item \textbf{Architectural foundation and reusable toolkit.} Front-end components and code abstractions for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
   \item \textbf{Licensing data migration.} Moving licensing configuration from an XML file into the Caché backend, with the related internal tooling created or rewritten. Preparation for reuse across other M-line products is in scope; implementation in those products is not.
-  \item \textbf{Both client a server-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
+  \item \textbf{Both client and server-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
   \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directly in or by the shell. At least one demonstrative mini-app will be delivered.
   \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope.
 \end{itemize}
@@ -110,7 +110,14 @@ Other than the benefits for the new agendas, the previously mentioned points tha
 \noindent \textbf{AI-augmented development.} The project is developed with extensive use of AI coding assistants throughout. Rather than treating AI tooling as a passive convenience, the project will explicitly document the patterns and guardrails that make it productive: project memory in the form of in-repo guidance files, verification pipelines before accepting generated changes, and a preference for explicit and strongly typed dependency injection over hidden global states. This will increase the quality of the generated code and improve the whole process, including the code review.
 
 \medskip
-\noindent \textbf{Delivery and defense format.} The project deliverable consists of the source code of the modernized client shell and the toolkit and a live demonstration at the final presentation.
+\noindent \textbf{Delivery and defense format.} The academic deliverable consists of:
+\begin{itemize}
+  \item \textbf{Source code} of the modernized client shell, the supporting toolkit library, the demonstrative mini-app, the supporting test projects, and any internal tools modified or created during the project where the changes are substantial.
+  \item \textbf{Developer documentation}: architectural overview, toolkit usage guide, and recommended development setup for future agenda implementations.
+  \item \textbf{AI documentation}: patterns, guardrails, and observations collected during the project, delivered either as a standalone document or integrated with the developer documentation.
+  \item \textbf{User documentation} for the new shell, written for end users and primarily highlighting new features and differences from the old shell.
+\end{itemize}
+These are delivered as a snapshot from M-line's GitHub repositories (not the full repositories themselves); the academic supervisor, opponent, and Committee receive access on request. The project is also presented as a live demonstration at the defense.
 
 \medskip
 \noindent \textbf{Company consent.} M-line software s.r.o. has approved the project scope and consents to its academic delivery and presentation as described above.
