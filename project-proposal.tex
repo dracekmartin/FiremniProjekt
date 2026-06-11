@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
 
 \renewcommand{\dateseparator}{.}
 \renewcommand{\baselinestretch}{1.5}
@@ -19,13 +20,13 @@
 
 % METADATA SECTION START
 \def\StudentsFullName{Bc. Martin Hubata}
-\def\Obor{Computer Science - Software and Data Engineering}
+\def\Obor{Computer Science -- Software and Data Engineering}
 \def\ProjetTitle{Development foundation and processes for legacy transportation software modernization}
 \def\ProjectType{\CompanyProject}
 \def\SupervisorFullName{Mgr. Petr Škoda, Ph.D.}
 \def\ConsultantsFullName{[Industry consultant from M-line software s.r.o. -- TBD]}
-\def\ExpectedStart{[TBD]}
-\def\ExpectedEnd{[TBD]}
+\def\ExpectedStart{1.6.2026}
+\def\ExpectedEnd{1.3.2027}
 % METADATA SECTION END
 
 \title{\ProjetTitle}
@@ -53,20 +54,20 @@
 
 \section{Introduction}
 
-The author works for M-line software as a software engineer primarily on the EDISON product line, integrated into the team's standard development practices. The ``academic team'' for the project is this M-line development team. M-line is a Czech software company developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framework + WinForms client onto a more modern stack of .NET Core + WPF.
+The author works for M-line software as a software engineer, primarily on the EDISON product line, integrated into the team's standard development practices. The ``academic team'' for the project is this M-line development team. M-line is a Czech software company developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framework + WinForms client onto a more modern stack of .NET Core + WPF.
 
-The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and a demonstration of the processes and patterns being introduced.
+The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and as a demonstration of the processes and patterns being introduced.
 
 \medskip
 \noindent The expected outcomes of the project:
 
 \begin{itemize}
-  \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \texttt{\%UnitTest}), establishing a test-first culture absent from the legacy stack. Concretely, all public APIs in the toolkit and shell ship with unit tests, test patterns are documented for reuse by future agenda implementations, and automated test execution is part of the development workflow.
+  \item \textbf{Testing infrastructure.} Unit-testing setup on both .NET (xUnit, NSubstitute) and Caché (native \%UnitTest), establishing a test-first culture absent from the legacy stack. Concretely, all public APIs in the toolkit and shell ship with unit tests, test patterns are documented for reuse by future agenda implementations, and automated test execution is part of the development workflow.
   \item \textbf{Architectural foundation and reusable toolkit.} Front-end components and code abstractions for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
   \item \textbf{Licensing data migration.} Moving licensing configuration from an XML file into the Caché backend, with the related internal tooling created or rewritten. Preparation for reuse across other M-line products is in scope; implementation in those products is not.
   \item \textbf{Both client and server-side update mechanism modernization.} Most likely a full recreation; the existing mechanism is too tangled to develop incrementally.
   \item \textbf{Modernized shell with mini-app subsystem.} A new shell preserving the responsibilities of the legacy one but designed for maintainability and extensibility, exposing a mini-app interface that agendas can opt into for summaries and reminders displayed directly in or by the shell. At least one demonstrative mini-app will be delivered.
-  \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope. Concretely, success means all M-line developer workstations using the new shell as their default daily tool, at least one customer pilot site running the new shell in parallel with the legacy, and all legacy agendas remaining launchable through the new shell.
+  \item \textbf{Pilot deployment.} Rollout on developer workstations first, then parallel deployment to users, and eventual replacement of the old shell. Modernization of agendas themselves is out of scope. Concretely, success means all M-line developer workstations using the new shell as their default daily tool, at least one customer pilot site running the new shell in parallel with the legacy, and all (still relevant) legacy agendas remaining launchable through the new shell.
 \end{itemize}
 
 \subsection{Relation to other projects}
@@ -78,6 +79,111 @@ The project is being developed alongside several existing M-line projects with w
   \item \textbf{InterSystems Caché backend} -- the shared data store. It is used by most of the company's projects. Many of the project's architectural decisions will be influenced by the fact that our deployment process is much faster when deploying just a Caché update (and not the .NET). This is impossible to change, due to the non-negotiable compatibility with the old agendas. A concrete example of this is the licensing. However, many lower-level decisions, like those in the toolkit for developers, will also be influenced by this fact. 
   \item \textbf{TemplateDesigner} -- a WPF agenda concerning documents (printable timetables, invoices, etc.), already written by a colleague partially in the new stack. It serves as a second consumer validating the toolkit design (alongside the shell itself); its needs will influence which parts of the toolkit are prioritized.
 \end{itemize}
+
+\definecolor{c4person}{HTML}{08427B}
+\definecolor{c4container}{HTML}{1168BD}
+\definecolor{c4external}{HTML}{999999}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  scale=0.75, transform shape, font=\small,
+  c4person/.style={
+    rectangle, rounded corners=6pt, fill=c4person, draw=none,
+    minimum width=3cm, minimum height=2cm,
+    text=white, align=center, inner sep=4pt,
+    append after command={
+      \pgfextra{%
+        \fill[c4person] ([yshift=0.3cm]\tikzlastnode.north) circle (0.4);
+      }
+    }
+  },
+  c4container/.style={
+    rectangle, rounded corners=4pt, fill=c4container, draw=none,
+    text=white, align=center,
+    minimum width=3.6cm, minimum height=2cm, inner sep=4pt,
+  },
+  c4external/.style={
+    rectangle, rounded corners=4pt, fill=c4external, draw=none,
+    text=white, align=center,
+    minimum width=3.6cm, minimum height=2cm, inner sep=4pt,
+  },
+  c4database/.style={
+    cylinder, draw=c4external!50!black, shape border rotate=90, aspect=0.4,
+    fill=c4external, text=white, align=center,
+    minimum width=3.2cm, minimum height=2.8cm,
+  },
+  c4boundary/.style={draw, rounded corners=6pt, line width=0.8pt, fill=none},
+  c4arrow/.style={-latex, thick, dashed, draw=gray!60, font=\scriptsize, align=center}
+]
+  \node[c4person] (user) at (-4, 10) {%
+    \textbf{End user}\\{\footnotesize [Person]}\\{\scriptsize Daily operator}
+  };
+
+  % Outer EDISON 2 boundary (contains Core + TemplateDesigner)
+  \node[c4boundary, minimum width=17cm, minimum height=9cm] (outer) at (1, 4) {};
+  \node[anchor=north west, font=\itshape\small, align=left]
+    at ([shift={(0.3cm, -0.3cm)}]outer.north west)
+    {EDISON~2};
+
+  % Inner EDISON 2 Core boundary
+  \node[c4boundary, minimum width=12cm, minimum height=7cm] (core) at (-0.9, 4) {};
+  \node[anchor=north west, font=\itshape\small, align=left]
+    at ([shift={(0.3cm, -0.3cm)}]core.north west)
+    {EDISON~2 Core};
+
+  \node[c4container] (shell)   at (-4, 5.5) {%
+    \textbf{Modernized Shell}\\{\footnotesize [.NET (Core) + WPF]}\\{\scriptsize New client app}
+  };
+  \node[c4container] (toolkit) at ( 2.5, 5.5) {%
+    \textbf{Shared Toolkit}\\{\footnotesize [.NET (Core) + WPF library]}\\{\scriptsize Reusable UI and view-model features}
+  };
+  \node[c4container] (bridge)  at (-4, 2) {%
+    \textbf{Legacy Bridge}\\{\footnotesize [.NET Framework WinForms]}\\{\scriptsize Hosts WinForms agendas}
+  };
+
+  % TemplateDesigner — peer of Core within EDISON 2 outer
+  \node[c4container] (td) at (7.5, 2) {%
+    \textbf{TemplateDesigner}\\{\footnotesize [.NET (Core) + WPF]}\\{\scriptsize Document design tool}
+  };
+
+  % Legacy EDISON boundary (contains Legacy Shell + Agendas)
+  \node[c4boundary, minimum width=13cm, minimum height=4cm] (legacyboundary) at (-4, -3) {};
+  \node[anchor=north west, font=\itshape\small, align=left]
+    at ([shift={(0.3cm, -0.3cm)}]legacyboundary.north west)
+    {Legacy EDISON};
+
+  \node[c4external] (legacy) at (-8, -3) {%
+    \textbf{Legacy Shell}\\{\footnotesize [.NET Framework WinForms]}\\{\scriptsize Old client app}
+  };
+  % Legacy Agendas — stack of WinForms .exe processes (3 rectangles offset upper-right)
+  \node[rectangle, draw=c4external!60!black, line width=0.5pt, fill=c4external, rounded corners=4pt, minimum width=3.6cm, minimum height=2cm] at (0.3, -2.7) {};
+  \node[rectangle, draw=c4external!60!black, line width=0.5pt, fill=c4external, rounded corners=4pt, minimum width=3.9cm, minimum height=2cm] at (0.15, -2.85) {};
+  \node[c4external, draw=c4external!60!black, line width=0.5pt] (agendas) at (0, -3) {%
+    \textbf{Legacy Agendas}\\{\footnotesize [.NET Framework WinForms]}\\{\scriptsize Business modules}
+  };
+
+  \node[c4database] (cache) at (0, -8) {%
+    \textbf{InterSystems Cach\'e}\\{\footnotesize [Database]}\\{\scriptsize Shared data store}
+  };
+
+  \draw[c4arrow] (user.south) -- node[pos=0.4, right] {Uses\\\textit{[Desktop UI]}} (shell.north);
+  \draw[c4arrow] (shell.east) -- node[midway, above] {Consumes\\\textit{[.NET reference]}} (toolkit.west);
+  \draw[c4arrow] (toolkit.south west) -- node[midway, right] {Exposes\\agendas via} (bridge.north);
+  \draw[c4arrow] (shell.south) -- node[midway, right] {Hosts\\agendas via} (bridge.north);
+  \draw[c4arrow] (bridge.south) -- node[pos=0.50, above right=-2pt] {Spawns\\\textit{[cmdline params]}} (agendas.north west);
+  \draw[c4arrow] (legacy.east) -- node[midway, above] {Spawns\\\textit{[.NET Remoting]}} (agendas.west);
+  \draw[c4arrow] (td.north) -- node[pos=0.5, above right=-2pt] {Consumes\\\textit{[.NET reference]}} (toolkit.south east);
+  \draw[c4arrow] (shell.south east) .. controls (4, 4) and (4, -5) ..
+    node[pos=0.55, right] {Queries\\\textit{[HTTP]}} (cache.north east);
+  \draw[c4arrow] (toolkit.south) -- node[pos=0.4, left=3pt] {Exposes agenda} (td.west);
+  \draw[c4arrow] (legacy.south east) -- node[pos=0.5, left=2pt] {Queries\\\textit{[HTTP]}} (cache.west);
+  \draw[c4arrow] (td.south) -- node[pos=0.5, right] {Queries\\\textit{[HTTP]}} (cache.east);
+  \draw[c4arrow] (agendas.south) -- node[pos=0.3, right] {Queries\\\textit{[HTTP]}} (cache.north);
+\end{tikzpicture}
+\caption{C4 Container diagram for the EDISON product line. EDISON~2 Core (modernized shell, shared toolkit, legacy bridge) is the focus of this project; TemplateDesigner is a peer WPF agenda within EDISON~2 that also consumes the toolkit. The legacy bridge spawns existing WinForms agendas, which are also launched by the legacy shell. All systems share the InterSystems Cach\'e backend.}
+\label{fig:c4-container}
+\end{figure}
 
 \section{Project description}
 
