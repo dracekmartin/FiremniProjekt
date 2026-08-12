@@ -21,10 +21,10 @@
 % METADATA SECTION START
 \def\StudentsFullName{Bc. Martin Hubata}
 \def\Obor{Computer Science -- Software and Data Engineering}
-\def\ProjetTitle{Development foundation and processes for legacy transportation software modernization}
+\def\ProjetTitle{Development foundation for legacy transportation software modernization}
 \def\ProjectType{\CompanyProject}
 \def\SupervisorFullName{Mgr. Petr Škoda, Ph.D.}
-\def\ConsultantsFullName{[Industry consultant from M-line software s.r.o. -- TBD]}
+\def\ConsultantsFullName{Bc. Jiří Krhánek}
 \def\ExpectedStart{1.6.2026}
 \def\ExpectedEnd{1.3.2027}
 % METADATA SECTION END
@@ -169,14 +169,14 @@ The project is being developed alongside several existing M-line projects with w
 
   \draw[c4arrow] (user.south) -- node[pos=0.4, right] {Uses\\\textit{[Desktop UI]}} (shell.north);
   \draw[c4arrow] (shell.east) -- node[midway, above] {Consumes\\\textit{[.NET reference]}} (toolkit.west);
-  \draw[c4arrow] (toolkit.south west) -- node[midway, right] {Exposes\\agendas via} (bridge.north);
+  %\draw[c4arrow] (toolkit.south west) -- node[midway, right] {Exposes\\agendas via} (bridge.north);
   \draw[c4arrow] (shell.south) -- node[midway, right] {Hosts\\agendas via} (bridge.north);
-  \draw[c4arrow] (bridge.south) -- node[pos=0.50, above right=-2pt] {Spawns\\\textit{[cmdline params]}} (agendas.north west);
+  \draw[c4arrow] (bridge.south) -- node[pos=0.50, above right=-2pt] {Spawns\\\textit{[.NET Reflection]}} (agendas.north west);
   \draw[c4arrow] (legacy.east) -- node[midway, above] {Spawns\\\textit{[.NET Remoting]}} (agendas.west);
   \draw[c4arrow] (td.north) -- node[pos=0.5, above right=-2pt] {Consumes\\\textit{[.NET reference]}} (toolkit.south east);
   \draw[c4arrow] (shell.south east) .. controls (4, 4) and (4, -5) ..
     node[pos=0.55, right] {Queries\\\textit{[HTTP]}} (cache.north east);
-  \draw[c4arrow] (toolkit.south) -- node[pos=0.4, left=3pt] {Exposes agenda} (td.west);
+  %\draw[c4arrow] (toolkit.south) -- node[pos=0.4, left=3pt] {Exposes agenda} (td.west);
   \draw[c4arrow] (legacy.south east) -- node[pos=0.5, left=2pt] {Queries\\\textit{[HTTP]}} (cache.west);
   \draw[c4arrow] (td.south) -- node[pos=0.5, right] {Queries\\\textit{[HTTP]}} (cache.east);
   \draw[c4arrow] (agendas.south) -- node[pos=0.3, right] {Queries\\\textit{[HTTP]}} (cache.north);
@@ -223,9 +223,16 @@ Other than the benefits for the new agendas, the previously mentioned points tha
   \item \textbf{AI documentation}: patterns, guardrails, and observations collected during the project, delivered either as a standalone document or integrated with the developer documentation.
   \item \textbf{User documentation} for the new shell, written for end users and primarily highlighting new features and differences from the old shell.
 \end{itemize}
-These are delivered as a snapshot from M-line's GitHub repositories (not the full repositories themselves); the academic supervisor, opponent, and Committee receive access on request. The project is also presented as a live demonstration at the defense.
+
+These are delivered as a snapshot from M-line's GitHub repositories (not the full repositories themselves). The snapshot will include:
+\begin{itemize}
+  \item Source code and documentation files written by the author
+  \item A document specifying files that were also developed by others, describing what was done by the author
+  \item An export of the git history of the author, using git log
+\end{itemize}
+The academic supervisor, opponent, and Committee receive access to the previously mentioned on request. Similarly, a demo of the project will also be made accessible upon request.
 
 \medskip
-\noindent \textbf{Company consent.} M-line software s.r.o. has approved the project scope and consents to its academic delivery and presentation as described above.
+\noindent \textbf{Company consent and consultant.} M-line software s.r.o. has approved the project scope and consents to its academic delivery and presentation as described above. The company consultant is a software engineer responsible for the biggest portion of the legacy stack the project interacts with. He can be reached on \href{mailto:jiri.krhanek@m-line.cz}{jiri.krhanek@m-line.cz}.
 
 \end{document}
