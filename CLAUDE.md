@@ -12,7 +12,8 @@ Akademické dokumenty k firemnímu projektu (NPRG071, MFF UK, program SDE): mode
 
 - Dokumenty anglicky, lidským hlasem záměru: prosté věty, žádný korporátní/AI tón, žádné em dashes (`---` ani `—`); en dash ` -- ` střídmě, jako v záměru.
 - Specifikace teoreticky předchází implementaci: žádné implementační detaily z ../EDISON2 (názvy tříd, knihoven, „already implemented"). Repo EDISON2 slouží jen ke kalibraci realističnosti; psát forward-looking na úrovni požadavků.
-- Místa k ručnímu doladění autorem značit `\textcolor{red}{TODO: ...}`.
+- Místa k ručnímu doladění autorem značit `\textcolor{red}{TODO: ...}` (viditelné v PDF, pro supervizora).
+- Martinovy recenzní poznámky v `.tex` jsou komentáře `% MH: ...` — najít grepem, vyřešit, smazat.
 
 ## Build
 
