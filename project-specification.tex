@@ -179,7 +179,7 @@ Other than the benefits for the new agendas, the previously mentioned points tha
         \item Developers, when they need to add or modify the relationships between modules that they have developed.
         \item Licenser (company employee creating/modifying licenses), who will be able to use a more modern tool to express the constraints coming from agreements with end users more easily. The tool will be more in line with other tools the company has recently developed.
     \end{itemize}
-    \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simply too tangled to be modified.
+    \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simply too tangled to be modified. It has known security and reliability issues that nobody dares to fix, which makes this project the right opportunity to rewrite it.
     \item The old shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licensing, updating and the agendas themselves.
 \end{itemize}
 
@@ -208,56 +208,83 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{S3} The shell presents a tree of available modules (agendas), filtered by the customer license and the user's permissions.
   \item \reqdef{S4} The module tree supports text search.
   \item \reqdef{S5} The user can mark favorite modules for quick access.
-  \item \reqdef{S6} Every still-relevant legacy WinForms agenda can be launched through a compatibility bridge that passes the established session and company context. The list of agendas that count as still relevant will be fixed with the company by the shell prototype milestone (MS3) and will become part of the documentation.
+  \item \reqdef{S6} Every still-relevant legacy WinForms agenda can be launched through a compatibility bridge that passes the established session, company context, and the user's licensed permissions. The same holds for legacy windows that are not agendas, such as the data export and import used by developers, and for applications built on the new stack, which the shell launches with the same context. The list of agendas that count as still relevant will be fixed with the company by the shell prototype milestone (MS3) and will become part of the documentation.
   \item \reqdef{S7} Per-user settings (layout, favorites, last company) persist and are restored on the next login.
-  \item \reqdef{S8} The shell handles the session lifecycle cleanly: inactivity and forced logout with a user-visible countdown, detection of connection loss, and orderly shutdown.
+  \item \reqdef{S8} The shell handles the session lifecycle cleanly: inactivity and forced logout with a user-visible countdown, detection of connection loss, and orderly shutdown. Closing the shell warns the user that all open agenda windows will close, and one action closes all open windows at once.
   \item \reqdef{S9} The shell verifies client/server version compatibility before and during a session. A mismatch triggers the mandatory update (\req{U1}), and the shell refuses to operate only when the update cannot proceed.
-  \item \reqdef{S10} \emph{(nice to have)} Desktop shortcuts can start the shell and open a specific agenda directly.
-  \item \reqdef{S11} \emph{(nice to have)} Session status information (user, company, client version, license expiry) is persistently visible in the main window.
+  \item \reqdef{S10} At first launch on an unconfigured workstation, the shell asks for the server connection, verifies it, and continues without a restart.
+  \item \reqdef{S11} Users with backend-managed accounts can change their password in the shell, and the backend can require a password change at the next login.
+  \item \reqdef{S12} The user can switch to a different user account at runtime, which closes open agenda windows first.
+  \item \reqdef{S13} The shell offers a desktop area where the user arranges shortcut tiles for modules and launches them, persisted per user and company (the desktop is itself a mini-app living in the hosting area).
+  \item \reqdef{S14} The shell lists the running agendas and can bring any of them to the front, and launching an agenda that already runs focuses the existing window instead of starting a second copy.
+  \item \reqdef{S15} Where the backend allows it, the shell signs the user in under their Windows identity without showing the login dialog.
+  \item \reqdef{S16} The login screen can remember the user name and, where the backend permits it, the password, stored encrypted on the workstation.
+  \item \reqdef{S17} Session status information (user, company, client version, license expiry) is persistently visible in the main window.
+  \item \reqdef{S18} \emph{(nice to have)} The user can mark one module as their startup module, and the shell opens it automatically after login.
+  \item \reqdef{S19} \emph{(nice to have)} Next to the favorites, the shell keeps an automatically maintained list of the user's most used modules.
+  \item \reqdef{S20} \emph{(nice to have)} Desktop shortcuts can start the shell and open a specific agenda directly.
+  \item \reqdef{S21} \emph{(nice to have)} A brand-new server installation can be initialized with the new tooling: the company, the first administrator account, and the license import. Without this, the initialization stays a job for the legacy tools.
 \end{itemize}
 
 \noindent \textbf{Mini-apps}
 \begin{itemize}
   \item \reqdef{M1} The shell provides a hosting area where mini-apps can be arranged and resized, always remaining under shell management.
   \item \reqdef{M2} Agendas opt in by implementing a defined mini-app interface through which they publish their views instead of drawing into the shell directly.
-  \item \reqdef{M3} Mini-apps are chosen per user: each user adds and removes them directly in the shell, and the choice persists per user and company.
-  \item \reqdef{M4} A mini-app is offered only when its parent agenda is licensed and accessible to the user.
+  \item \reqdef{M3} Mini-apps are chosen per user: each user adds and removes them directly in the shell, and the choice persists per user and company. The one exception is the permanently present mini-app from \req{M6}.
+  \item \reqdef{M4} A mini-app is offered only when its parent agenda is licensed and the user is permitted to use it.
   \item \reqdef{M5} At least one demonstrative mini-app working over real agenda data is delivered.
-  \item \reqdef{M6} \emph{(nice to have)} The user's mini-app layout persists per user and company across sessions.
+  \item \reqdef{M6} A permanently present mini-app shows company news and announcements (releases, training and similar), and the user cannot remove it. It is the company's first direct channel to the end users.
+  \item \reqdef{M7} The at-a-glance panels of the legacy shell remain available as mini-apps through their existing server contract, displayed with the toolkit's data list.
+  \item \reqdef{M8} Open mini-apps can refresh their content automatically at a chosen interval.
+  \item \reqdef{M9} Mini-apps respect the user's functional restrictions when showing data, as the legacy panels do.
+  \item \reqdef{M10} After a user or company switch, mini-apps reopen from the layout of the new context and never show data of the previous session. A damaged stored layout must not prevent the shell from starting.
+  \item \reqdef{M11} The user's mini-app layout persists per user and company across sessions.
 \end{itemize}
 
 \noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). The licenser edits licenses, developers define which elements belong to which licensable feature, and the shell consumes the result at login through the customer backend. Today the license is an opaque encrypted record in the customer's Caché backend, delivered automatically from M-line's central license archive, and the module tree definitions are XML files distributed with the client. The pain is not the distribution but the format and the tooling around it: the encrypted record has no workable data model behind it, and both the licenser and the developers maintain their parts with tools that have not aged well.
 \begin{itemize}
   \item \reqdef{L1} Licensing data gets a new, structured data model and store in M-line's central archive, replacing the opaque encrypted format, and the new store plugs into the existing delivery to customer backends. The shell keeps reading the license from the customer backend.
-  \item \reqdef{L2} The shell consumes the license: it hides unlicensed modules, presents login rejections when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching limits and expiry.
+  \item \reqdef{L2} The shell consumes the license: it hides unlicensed modules, presents login rejections when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching limits and expiry. After the license expires, the system runs read-only.
   \item \reqdef{L3} An editor for the licenser covers the common workflows (creating, modifying, and issuing customer licenses) and follows the conventions of the company's newer internal tools. Less common cases may stay in the legacy tool for a time.
-  \item \reqdef{L4} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the customer's Caché backend, and developers get a supported way to edit them, replacing today's manual XML maintenance.
+  \item \reqdef{L4} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the customer's Caché backend, and developers get a supported way to edit them, replacing the manual XML maintenance. The migration preserves the semantics of the existing definitions (hidden and internal-only entries, input parameters, window defaults), and the tools that read the XML keep working until they are replaced.
   \item \reqdef{L5} Existing licenses are migrated from the old store into the new data model with verified equivalence: a customer installation sees the same modules before and after the migration.
-  \item \reqdef{L6} \emph{(nice to have)} The licensing data model is designed product-agnostically so other M-line products can adopt it later.
+  \item \reqdef{L6} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in. The authorization of this intervention is checked on the server.
+  \item \reqdef{L7} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
+  \item \reqdef{L8} \emph{(nice to have)} The license can be refreshed at runtime without restarting the shell, and the installation renews it automatically from the central archive before it expires.
+  \item \reqdef{L9} \emph{(nice to have)} The licensing data model is designed product-agnostically so other M-line products can adopt it later.
 \end{itemize}
 
 \noindent \textbf{Update mechanism}
 \begin{itemize}
   \item \reqdef{U1} At startup the client compares its version with the server installation and, on a mismatch, enforces a mandatory update before letting the user in. The download and apply steps may be carried out by the existing update engine. Replacing it is possible but not promised.
-  \item \reqdef{U2} A runtime version guard rejects requests from stale clients, so client and server code never drift within a session.
+  \item \reqdef{U2} A runtime version guard rejects requests from stale clients, so client and server code never drift within a session. Server-only changes are tolerated: a release that does not change the client does not force running clients out.
   \item \reqdef{U3} The server-side release distribution is modernized so that new and legacy clients are served from the same pipeline.
   \item \reqdef{U4} The new update mechanism coexists with the legacy one: legacy clients on the same installation keep updating unchanged.
   \item \reqdef{U5} The client can passively notify the user that a newer release exists without forcing installation.
-  \item \reqdef{U6} After an update, the shell shows the user what changed in the release. For now the notes come from the legacy source: text files shipped with each release. The eventual goal is to move them to the company web, where they would be written and served from, with no per-release files traveling with the version.
+  \item \reqdef{U6} After an update, the shell shows the user what changed in the release. Before opening an agenda whose package changed since the user last saw the notes, the shell shows what changed there, and the user can dismiss the notes until they change again. At the beginning the notes come from the legacy source: text files shipped with each release. The eventual goal is to move them to the company web, where they would be written and served from, with no per-release files traveling with the version.
+  \item \reqdef{U7} The new distribution fixes two known failures of the legacy mechanism: it supports secure transport (HTTPS), and a Caché-only patch never triggers a re-download of the client executables.
+  \item \reqdef{U8} While the server side of an installation is being updated, new logins are refused. The administrator can force the running clients out, and the users get a countdown, about a minute, to save their work.
+  \item \reqdef{U9} The company can pause the distribution of a release, and clients then behave as if no newer release existed.
+  \item \reqdef{U10} On a server installation, only an authorized user can start the update, and the update does not start while other users work with the system.
+  \item \reqdef{U11} \emph{(nice to have)} When the mandatory update cannot proceed, the user learns why in plain terms and the client exits in an orderly way.
 \end{itemize}
 
 \noindent \textbf{Toolkit.} The toolkit's users are developers, so the requirements below describe what it must offer them.
 \begin{itemize}
   \item \reqdef{T1} A view-model base with command creation, unified error presentation, and backend access, keeping view models free of UI-framework references.
-  \item \reqdef{T2} Common controls: a server-driven data list with filtering and column persistence, input forms, toolbars, standard dialogs, and a progress overlay.
+  \item \reqdef{T2} Common controls: a server-driven data list with filtering and column persistence, input forms defined and validated by the backend (so a form change does not require redistributing clients), toolbars, standard dialogs, and a progress overlay.
   \item \reqdef{T3} Theming through shared design tokens, with a light and a dark theme.
   \item \reqdef{T4} A typed backend-access layer wrapping the Caché communication, with one shared session per client process.
   \item \reqdef{T5} A persistence service for per-user and per-company preferences.
-  \item \reqdef{T6} A documented usage guide and test patterns for future agenda implementations.
+  \item \reqdef{T6} A documented usage guide and test patterns for future agenda implementations, including runnable mock implementations of the backend-access layer and a test runner for the Caché side, so agenda logic is testable on both stacks without a live installation.
+  \item \reqdef{T7} Data lists can export their contents, and printing is available where the legacy client offers it.
+  \item \reqdef{T8} Windows remember their position and size per user and company, the user can reset all window layouts to their defaults, and a window with unsaved changes asks for confirmation before it closes. All of this comes from the toolkit, not from each window.
 \end{itemize}
 
 \subsection{Non-Functional requirements}
 \label{sec:nfr}
+
+The same convention applies here: requirements marked \emph{(nice to have)} come last.
 
 \begin{itemize}
   \item \reqdef{N1} Backward compatibility: no breaking changes to the legacy client-server contract, and the same Caché backend serves old and new clients simultaneously.
@@ -266,11 +293,24 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{N4} Extensibility: adding a new agenda requires only its registration, not changes to the shell. Building a first agenda screen with the toolkit should be a matter of days, not weeks.
   \item \reqdef{N5} Server-side configurability: behavior that changes per deployment or per customer (the module tree, licensing) lives in a database, not in the client binaries, so changing it does not require redistributing clients.
   \item \reqdef{N6} Performance: shell startup and agenda launch are not perceptibly slower than in the legacy shell.
-  \item \reqdef{N7} Localization: the UI is Czech. Multi-language support is not a goal of the project.
+  \item \reqdef{N7} Localization: the UI is Czech, and full multi-language support is not a goal of the project. What matters is that the toolkit centralizes the shared terms (OK, Cancel, Add, Delete and similar), so they are written once and stay consistent.
   \item \reqdef{N8} Theming: the light and dark themes are consistent across the shell, the toolkit, and mini-apps.
   \item \reqdef{N9} Platform: Windows 10/11 desktop, distributed through the company's existing release channel.
   \item \reqdef{N10} AI-assistant friendliness: in-repo guidance files, explicit and strongly typed dependency injection as the default for new code, global state limited to a few documented and test-resettable seams, and a verification pipeline before accepting generated changes.
   \item \reqdef{N11} Security: licensing data in the new store is validated server-side, stored credentials are encrypted, and a failed update must leave the client startable. Full tamper-resistance of the license is explicitly out of reach while \req{N1} holds, because legacy clients must keep reading the compatible format.
+  \item \reqdef{N12} Responsiveness: the UI stays responsive during backend work. Long operations run under a progress overlay instead of freezing the window.
+  \item \reqdef{N13} Robustness: an unhandled error in one window does not terminate the client, and agendas launched by the shell never outlive it, so no orphaned process holds a license slot.
+  \item \reqdef{N14} Coexistence of locks: record locks taken by one client are honored by the other, and a normal logout releases all locks of the session.
+  \item \reqdef{N15} Keyboard: the shell and the toolkit components are operable by keyboard.
+  \item \reqdef{N16} Error reporting: client errors are reported automatically to the company's support backend, and the user can add a description of what they were doing. Screenshots attached to a report capture only the application's own windows. The user can also send a report on their own, without waiting for an error.
+  \item \reqdef{N17} Usage telemetry: the client records which windows and controls are used and sends the aggregate to the backend, where it helps decide what to port next.
+  \item \reqdef{N18} Every non-trivial window offers a support panel with the company's support channels and version information that identifies the window's context.
+  \item \reqdef{N19} The client upgrade preserves stored user preferences. If the stored state is unknown or damaged, the client falls back to defaults.
+  \item \reqdef{N20} The inactivity limit is configured on the server, as in the legacy system, with an optional per-user override.
+  \item \reqdef{N21} The user can switch the theme and adjust the application font at runtime, the new-stack UI scales with the font, and the choice is shared by the M-line applications on the workstation. Legacy WinForms agendas keep their own look.
+  \item \reqdef{N22} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user tells a production installation from a test one.
+  \item \reqdef{N23} \emph{(nice to have)} An administrator can tell new-client sessions from legacy ones in the administration views.
+  \item \reqdef{N24} \emph{(nice to have)} Administrative interventions (forced logouts, license and permission changes) leave an audit record.
 \end{itemize}
 
 \subsection{Mockups}
@@ -280,7 +320,7 @@ The screens below illustrate the proposed user interface design of the shell. \t
 
 \begin{figure}[H]
 \centering
-\mockupbox{Login screen: username and password, a remember-me option. The company context is established automatically (the last used company), and switching is available later from the main window. On a version mismatch this screen is preceded by the update prompt (figure~\ref{fig:mock-update}).}
+\mockupbox{Login screen: username and password, a remember-me option. Where the backend allows it, the login is silent under the Windows identity and this screen does not appear. The company context is established automatically (the last used company), and switching is available later from the main window. On a version mismatch this screen is preceded by the update prompt (figure~\ref{fig:mock-update}).}
 \caption{Login.}
 \label{fig:mock-login}
 \end{figure}
@@ -307,7 +347,7 @@ The screens below illustrate the proposed user interface design of the shell. \t
 \end{figure}
 
 \medskip
-\noindent A legacy licensing tool exists but is being replaced wholesale, so instead of a screenshot, a short storyboard: the licenser opens the tool and sees the list of customers and their licenses with validity. Selecting a license shows the purchased feature set as a tree of licensable modules with checkboxes, the numeric limits, and the validity period. Saving stores the license in the M-line central archive, from where the existing delivery brings it to the customer installation. No file is sent to the customer manually. A related view for developers allows editing the module relationships (which elements belong to which licensable feature), replacing today's manual XML editing.
+\noindent A legacy licensing tool exists but is being replaced wholesale, so instead of a screenshot, a short storyboard: the licenser opens the tool and sees the list of customers and their licenses with validity. Selecting a license shows the purchased feature set as a tree of licensable modules with checkboxes, the numeric limits, and the validity period. Saving stores the license in the M-line central archive, from where the existing delivery brings it to the customer installation. No file is sent to the customer manually. A related view for developers allows editing the module relationships (which elements belong to which licensable feature), replacing the manual XML editing.
 
 \subsection{Architecture}
 \label{sec:architecture}
@@ -324,7 +364,7 @@ Agendas integrate with the shell through the mini-app interface: an agenda regis
 
 The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and view composability make it natural to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its ability to show agenda information has stayed so limited.
 
-Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L1} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the session established at login instead of opening their own. TemplateDesigner currently keeps a session of its own, a temporary consequence of being built while the new stack matures, and will adopt the shared rule. It does not consume an extra license seat, because concurrency is counted per workstation.
+Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L1} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the session established at login instead of opening their own. TemplateDesigner, which started before this rule, may keep a session of its own for a time and will adopt the shared rule as the toolkit matures. It does not consume an extra license seat, because concurrency is counted per workstation.
 
 The update work recreates the coordination around updates: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is entangled with the user-inactivity issues mentioned earlier. The low-level apply engine may be retained (\req{U1}). Update packages live as files on the customer installation's server, from where both shells update themselves. M-line delivers releases to customer servers through the existing channel, modernized so that one pipeline serves both clients (\req{U3}). The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
 
