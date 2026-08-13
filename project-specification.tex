@@ -89,7 +89,7 @@ The project is being developed alongside several existing M-line projects with w
   \item \textbf{TemplateDesigner} -- a WPF agenda concerning documents (printable timetables, invoices, etc.), already written by a colleague partially in the new stack. It serves as a second consumer validating the toolkit design (alongside the shell itself); its needs will influence which parts of the toolkit are prioritized.
 \end{itemize}
 
-Figure~\ref{fig:c4-context} shows the system context. The author works inside the M-line development team, so cooperation with other team members is a daily matter. Its expected scope and forms are described in section~\ref{sec:collaboration}.
+Figure~\ref{fig:c4-context} shows the system context. The author works inside the M-line development team, so cooperation with other team members is a daily matter. The expected scope and forms of this cooperation are described in section~\ref{sec:collaboration}.
 
 \definecolor{c4person}{HTML}{08427B}
 \definecolor{c4container}{HTML}{1168BD}
@@ -184,21 +184,21 @@ Other than the benefits for the new agendas, the previously mentioned points tha
 \end{itemize}
 
 \medskip
-\noindent \textbf{Mini-apps.} The legacy shell has only a very limited capability of showing agenda information outside the agendas themselves. The mini-app subsystem addresses this: an agenda can publish small at-a-glance views (summaries, reminders, key tasks) that the shell displays without the user opening the full agenda. The feature targets power users who work across multiple agendas during the day and need a quick overview of their state. Mini-apps are opt-in per user: each user chooses in their settings which mini-apps to display. It is not a global or per-deployment choice.
+\noindent \textbf{Mini-apps.} The legacy shell has only very limited means of showing agenda information outside the agendas themselves. The mini-app subsystem addresses this: an agenda can publish small at-a-glance views (summaries, reminders, key tasks) that the shell displays without the user opening the full agenda. The feature targets power users who work across multiple agendas during the day and need a quick overview of their state. Mini-apps are opt-in per user: each user chooses in their settings which mini-apps to display. It is not a global or per-deployment choice.
 
 \medskip
 \noindent \textbf{AI-augmented development.} The project is developed with extensive use of AI coding assistants throughout. Rather than treating AI tooling as a passive convenience, the project will explicitly document the patterns and guardrails that make it productive: project memory in the form of in-repo guidance files, verification pipelines before accepting generated changes, and a preference for explicit and strongly typed dependency injection over hidden global states. This will increase the quality of the generated code and improve the whole process, including the code review.
 
 \medskip
-\noindent \textbf{Out of scope.} To keep expectations explicit: the project does not port existing agendas to the new stack. The demonstrative mini-app is written for an existing agenda, but the agenda itself is not rewritten. The licensing data model is prepared for reuse by other M-line products, but its adoption in those products is not part of the project. The customer rollout ends with one pilot site switched to the new shell. The full rollout is a follow-up activity of the company. The project adds no new business functionality to the agendas themselves.
+\noindent \textbf{Out of scope.} The project does not port existing agendas to the new stack. The demonstrative mini-app is written for an existing agenda, but the agenda itself is not rewritten. The licensing data model is prepared for reuse by other M-line products, but its adoption in those products is not part of the project. The customer rollout ends with one pilot site switched to the new shell. The full rollout is a follow-up activity of the company. The project adds no new business functionality to the agendas themselves.
 
 \medskip
-The description below reflects the current plan. The project runs inside a living company environment, so priorities may shift as the work progresses. Significant deviations from this specification will be documented and justified in the final developer documentation.
+The description below reflects the current plan. The project runs inside the company's everyday business, so priorities may shift as the work progresses. Significant deviations from this specification will be documented and justified in the final developer documentation.
 
 \subsection{Functional requirements}
 \label{sec:fr}
 
-The requirements are grouped by project outcome and numbered for reference. Requirements marked \emph{(nice to have)} come last in each group and may be reduced under time pressure. The rest are considered essential.
+The requirements are grouped by project outcome and numbered for reference. Requirements marked \emph{(nice to have)} come last in each group and may be reduced under time pressure. The rest are essential.
 
 \medskip
 \noindent \textbf{Shell}
@@ -208,7 +208,7 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{S3} The shell presents a tree of available modules (agendas), filtered by the customer license and the user's permissions.
   \item \reqdef{S4} The module tree supports text search.
   \item \reqdef{S5} The user can mark favorite modules for quick access.
-  \item \reqdef{S6} Every still-relevant legacy WinForms agenda can be launched through a compatibility bridge that passes the established session and company context. The list of agendas that count as still relevant will be fixed with the company by the shell prototype milestone (MS3) and becomes part of the documentation.
+  \item \reqdef{S6} Every still-relevant legacy WinForms agenda can be launched through a compatibility bridge that passes the established session and company context. The list of agendas that count as still relevant will be fixed with the company by the shell prototype milestone (MS3) and will become part of the documentation.
   \item \reqdef{S7} Per-user settings (layout, favorites, last company) persist and are restored on the next login.
   \item \reqdef{S8} The shell handles the session lifecycle cleanly: inactivity and forced logout with a user-visible countdown, detection of connection loss, and orderly shutdown.
   \item \reqdef{S9} The shell verifies client/server version compatibility before and during a session. A mismatch triggers the mandatory update (\req{U1}), and the shell refuses to operate only when the update cannot proceed.
@@ -230,7 +230,7 @@ The requirements are grouped by project outcome and numbered for reference. Requ
 \begin{itemize}
   \item \reqdef{L1} Licensing data gets a new, structured data model and store in M-line's central archive, replacing the opaque encrypted format, and the new store plugs into the existing delivery to customer backends. The shell keeps reading the license from the customer backend.
   \item \reqdef{L2} The shell consumes the license: it hides unlicensed modules, presents login rejections when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching limits and expiry.
-  \item \reqdef{L3} An editor for the licenser covers the common workflows, creating, modifying, and issuing customer licenses, and follows the conventions of the company's newer internal tools. Less common cases may stay in the legacy tool for a time.
+  \item \reqdef{L3} An editor for the licenser covers the common workflows (creating, modifying, and issuing customer licenses) and follows the conventions of the company's newer internal tools. Less common cases may stay in the legacy tool for a time.
   \item \reqdef{L4} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the customer's Caché backend, and developers get a supported way to edit them, replacing today's manual XML maintenance.
   \item \reqdef{L5} Existing licenses are migrated from the old store into the new data model with verified equivalence: a customer installation sees the same modules before and after the migration.
   \item \reqdef{L6} \emph{(nice to have)} The licensing data model is designed product-agnostically so other M-line products can adopt it later.
@@ -319,13 +319,13 @@ The solution consists of three cooperating parts, shown as containers in figure~
   \item \textbf{Legacy bridge} -- a backward-compatibility layer that hosts the existing WinForms agendas and passes them the established session and company context, so that the new shell can launch them without touching their source code. This is not a trivial layer: some agendas need specific exceptions in the host because of their age and the versions of standard components they use.
 \end{itemize}
 
-Agendas integrate with the shell through the mini-app interface: an agenda registers a factory for its mini-app view, and the shell instantiates the view, docks it, and manages its lifecycle and license gating. The shell never depends on concrete agendas. Each agenda only implements the interface the shell publishes.
+Agendas integrate with the shell through the mini-app interface: an agenda registers a factory for its mini-app view, and the shell instantiates the view, docks it, and manages its lifecycle and license checks. The shell never depends on concrete agendas. Each agenda only implements the interface the shell publishes.
 
-The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and view composability make it natural to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its capability of surfacing agenda information has stayed so limited.
+The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and view composability make it natural to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its ability to show agenda information has stayed so limited.
 
-Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L1} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the session established at login instead of opening their own. TemplateDesigner currently keeps a session of its own, a temporary consequence of being built while the new stack matures, and will converge to the shared rule. It does not consume an extra license seat, because concurrency is counted per workstation.
+Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L1} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the session established at login instead of opening their own. TemplateDesigner currently keeps a session of its own, a temporary consequence of being built while the new stack matures, and will adopt the shared rule. It does not consume an extra license seat, because concurrency is counted per workstation.
 
-The update work is a recreation of the orchestration around updates: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is entangled with the user-inactivity issues mentioned earlier. The low-level apply engine may be retained (\req{U1}). Update packages live as files on the customer installation's server, from where both shells update themselves. M-line delivers releases to customer servers through the existing channel, modernized so that one pipeline serves both clients (\req{U3}). The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
+The update work recreates the coordination around updates: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is entangled with the user-inactivity issues mentioned earlier. The low-level apply engine may be retained (\req{U1}). Update packages live as files on the customer installation's server, from where both shells update themselves. M-line delivers releases to customer servers through the existing channel, modernized so that one pipeline serves both clients (\req{U3}). The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
 
 \begin{figure}[h]
 \centering
@@ -464,7 +464,7 @@ The evaluation follows the three kinds of outcomes the project produces: code, a
 \noindent \textbf{Pilot deployment.} The success criteria are directly measurable: all M-line developer workstations use the new shell as their default daily tool, at least one customer pilot site uses the new shell as its only shell, and all still-relevant legacy agendas remain launchable through the new shell.
 
 \medskip
-\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company: structured feedback will be collected from the M-line developers who consume the toolkit, that is, the author's colleagues working on the shell and the author of TemplateDesigner. The feedback covers API usability, the effort of building a first screen with the toolkit compared to the legacy stack, and the quality of the documentation and test patterns. The expectation the toolkit is measured against is the one stated in \req{N4}: a first agenda screen should be a matter of days, not weeks. Since porting agendas is out of scope, this is measured on the screens actually built with the toolkit during the project: the demonstrative mini-app and the TemplateDesigner screens adopting it.
+\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company. The author will collect structured feedback from the M-line developers who consume the toolkit: his colleagues working on the shell and the author of TemplateDesigner. The feedback covers API usability, the effort of building a first screen with the toolkit compared to the legacy stack, and the quality of the documentation and test patterns. The toolkit is measured against the expectation stated in \req{N4}: a first agenda screen should be a matter of days, not weeks. Since porting agendas is out of scope, this is measured on the screens actually built with the toolkit during the project: the demonstrative mini-app and the TemplateDesigner screens adopting it.
 
 \section{Risks}
 \label{sec:risks}
@@ -475,7 +475,7 @@ The evaluation follows the three kinds of outcomes the project produces: code, a
   \item \textbf{Licensing migration underestimated.} The old license format is opaque and part of its semantics exists only in the code that reads and writes it. Mitigation: the migration is verified by the equivalence check from \req{L5}, and the data model comes before the editor. Fallback: the old store and its delivery keep running untouched until the equivalence is proven, so the migration can be re-run until it is right.
   \item \textbf{Problems at the pilot site.} The pilot does not depend on a customer volunteering: the company deploys the new shell to a selected site as part of a regular update, not as an opt-in, at least for a time. The real risk is an issue severe enough to send the site back to the legacy shell. Mitigation: months of daily internal use precede the pilot, and both shells stay installed side by side (\req{N2}), so a temporary return is cheap.
   \item \textbf{Toolkit validated by only two consumers.} An API that fits the shell and TemplateDesigner may still not generalize to future agendas. Mitigation: the API is treated as provisional and versioned, design reviews are held with the TemplateDesigner author, and the feedback collected in the evaluation is used to correct the design.
-  \item \textbf{AI-generated code quality.} Extensive use of AI assistants risks subtle defects at scale. Mitigation: generated changes go through the same tests and code review as any other change, and the concrete rules that keep the assistants reliable (in-repo guidance files, verification steps required before a change is accepted, conventions such as explicit typed dependency injection) are written down and become part of the AI documentation.
+  \item \textbf{AI-generated code quality.} Extensive use of AI assistants risks introducing many subtle defects. Mitigation: generated changes go through the same tests and code review as any other change, and the concrete rules that keep the assistants reliable (in-repo guidance files, verification steps required before a change is accepted, conventions such as explicit typed dependency injection) are written down and become part of the AI documentation.
   \item \textbf{Scope and timeline pressure.} The licensing or update work may slip. Mitigation: the schedule puts the foundation first (testing, toolkit, shell), and each outcome can be reduced to a smaller but still useful version. For licensing, the data model and migration come before the editor.
   \item \textbf{Company priorities.} As an employee, the author can be pulled to urgent company work. Mitigation: the milestones are agreed with the company, progress is followed by the author's manager, and the schedule keeps a buffer before the project end.
 \end{itemize}
@@ -514,7 +514,7 @@ The academic supervisor, opponent, and Committee receive access to the above on 
 \section{Time Schedule}
 \label{sec:schedule}
 
-The ordering follows the dependencies: the testing infrastructure and the toolkit come first because everything else consumes them, and the shell enters daily use on developer machines as early as possible, so that the pilot deployment at the end carries little risk. Licensing and the update mechanism follow once the foundation is stable, partly in parallel. The last two months are reserved for the pilot, the documentation, and the evaluation, with a buffer before the project end.
+The ordering follows the dependencies: the testing infrastructure and the toolkit come first because everything else consumes them. The shell enters daily use on developer machines as early as possible, so that the pilot deployment at the end carries little risk. Licensing and the update mechanism follow once the foundation is stable, partly in parallel. The last two months are reserved for the pilot, the documentation, and the evaluation, with a buffer before the project end.
 
 The total planned effort is about 120 man-days over the nine months, corresponding to the substantial part of the author's working time that the company dedicates to the project. \textcolor{red}{TODO: review the man-day split below.}
 
@@ -534,7 +534,7 @@ The total planned effort is about 120 man-days over the nine months, correspondi
  \hline
  MS5 Licensing modernization & Data model, migration, licenser and developer tooling & 10 -- 11/2026 & 14 \\
  \hline
- MS6 Update mechanism & Update orchestration, client and server integration & 11 -- 12/2026 & 14 \\
+ MS6 Update mechanism & Update coordination, client and server integration & 11 -- 12/2026 & 14 \\
  \hline
  MS7 Pilot deployment & Developer workstations, customer pilot site & 1/2027 & 8 \\
  \hline
@@ -551,7 +551,7 @@ The author is a regular member of the M-line development team, and the project i
 
 \subsection{Consulting plan}
 
-Consultations with the supervisor are planned around the milestones: a roughly one-hour meeting, in person or online, at each major milestone boundary (roughly every six weeks), plus a short e-mail status update every month. The supervisor has access to a demo of the current state on request at any point. \textcolor{red}{TODO: adjust once the exact cadence is agreed with the supervisor.}
+Consultations with the supervisor are planned around the milestones: a roughly one-hour meeting, in person or online, at each major milestone boundary (about every six weeks), plus a short e-mail status update every month. The supervisor has access to a demo of the current state on request at any point. \textcolor{red}{TODO: adjust once the exact cadence is agreed with the supervisor.}
 
 The company consultant is available continuously as a colleague. His role is described below.
 
