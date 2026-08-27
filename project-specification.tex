@@ -211,10 +211,11 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{S15} Where the backend allows it, the shell signs the user in under their Windows identity without showing the login dialog.
   \item \reqdef{S16} The login screen can remember the user name and, where the backend permits it, the password, stored encrypted on the workstation.
   \item \reqdef{S17} Session status information (user, company, client version, license expiry) is persistently visible in the main window.
-  \item \reqdef{S18} \emph{(nice to have)} The user can mark one module as their startup module, and the shell opens it automatically after login.
-  \item \reqdef{S19} \emph{(nice to have)} Next to the favorites, the shell keeps an automatically maintained list of the user's most used modules.
-  \item \reqdef{S20} \emph{(nice to have)} Desktop shortcuts can start the shell and open a specific agenda directly.
-  \item \reqdef{S21} \emph{(nice to have)} A brand-new server installation can be initialized with the new tooling: the company, the first administrator account, and the license import. Without this, the initialization stays a job for the legacy tools.
+  \item \reqdef{S18} The inactivity limit is configured on the server, as in the legacy system, with an optional per-user override.
+  \item \reqdef{S19} \emph{(nice to have)} The user can mark one module as their startup module, and the shell opens it automatically after login.
+  \item \reqdef{S20} \emph{(nice to have)} Next to the favorites, the shell keeps an automatically maintained list of the user's most used modules.
+  \item \reqdef{S21} \emph{(nice to have)} Desktop shortcuts can start the shell and open a specific agenda directly.
+  \item \reqdef{S22} \emph{(nice to have)} A brand-new server installation can be initialized with the new tooling: the company, the first administrator account, and the license import. Without this, the initialization stays a job for the legacy tools.
 \end{itemize}
 
 \noindent \textbf{Mini-apps}
@@ -239,6 +240,8 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{L3} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in.
   \item \reqdef{L4} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
   \item \reqdef{L5} \emph{(nice to have)} The license can be refreshed at runtime without restarting the shell.
+  \item \reqdef{L6} \emph{(nice to have)} An administrator can tell new-client sessions from legacy ones in the administration views.
+  \item \reqdef{L7} \emph{(nice to have)} Administrative interventions (forced logouts, license and permission changes) leave an audit record.
 \end{itemize}
 
 \noindent \textbf{Update mechanism}
@@ -266,38 +269,34 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{T6} A documented usage guide and test patterns for future agenda implementations, including runnable mock implementations of the backend-access layer and a test runner for the Caché side, so agenda logic is testable on both stacks without a live installation.
   \item \reqdef{T7} Data lists can export their contents, and printing is available where the legacy client offers it.
   \item \reqdef{T8} Windows remember their position and size per user and company, the user can reset all window layouts to their defaults, and a window with unsaved changes asks for confirmation before it closes. All of this comes from the toolkit, not from each window.
+  \item \reqdef{T9} Client errors are reported automatically to the company's support backend, and the user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, a deliberate narrowing against the legacy behavior. The user can also send a report on their own, without waiting for an error.
+  \item \reqdef{T10} The client records which windows and controls are used and sends the aggregate to the backend, where it helps decide what to port next. The telemetry carries usage counts, not the content of the user's work.
+  \item \reqdef{T11} Every non-trivial window offers a support panel with the company's support channels and version information that identifies the window's context.
+  \item \reqdef{T12} The client upgrade preserves stored user preferences. If the stored state is unknown or damaged, the client falls back to defaults.
+  \item \reqdef{T13} The user can switch the theme and adjust the application font at runtime, the new-stack UI scales with the font, and the choice is shared by the M-line applications on the workstation. Legacy WinForms agendas keep their own look.
+  \item \reqdef{T14} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user tells a production installation from a test one.
 \end{itemize}
 
 \subsection{Non-Functional requirements}
 \label{sec:nfr}
 
-The same convention applies here: requirements marked \emph{(nice to have)} come last.
+Each non-functional requirement states how it will be checked.
 
 \begin{itemize}
-  \item \reqdef{N1} Backward compatibility: no breaking changes to the legacy client-server contract, and the same Caché backend serves old and new clients simultaneously.
+  \item \reqdef{N1} Backward compatibility: no breaking changes to the legacy client-server contract, and the same Caché backend serves old and new clients simultaneously. Record locks taken by one client are honored by the other, and a normal logout releases all locks of the session.
   \item \reqdef{N2} Parallel operation: the new and the legacy shell are installable and runnable side by side on one workstation and one installation.
-  \item \reqdef{N3} Testability: all testable public logic of the toolkit and the shell (view models, services, non-visual components) is covered by unit tests on both stacks, and the tests run automatically before every push on the developer machines.
-  \item \reqdef{N4} Extensibility: adding a new agenda requires only its registration, not changes to the shell. Building a first agenda screen with the toolkit should be a matter of days, not weeks.
-  \item \reqdef{N5} Server-side configurability: behavior that changes per deployment or per customer (the module tree, licensing) lives in a database, not in the client binaries, so changing it does not require redistributing clients.
-  \item \reqdef{N6} Performance: shell startup and agenda launch are not perceptibly slower than in the legacy shell, compared side by side on the same workstation.
+  \item \reqdef{N3} Testability: at least 80~\% of the non-visual types of the shell and the toolkit (view models, services, parsers) have unit tests, every Caché class with logic has a test class, and the tests run automatically before every push on the developer machines.
+  \item \reqdef{N4} Extensibility: adding a new agenda requires only its registration, not changes to the shell.
+  \item \reqdef{N5} Server-side configurability: behavior that changes per deployment or per customer (the module tree, licensing, the inactivity limit) lives in a database, not in the client binaries, so changing it does not require redistributing clients.
+  \item \reqdef{N6} Performance: the shell starts faster than the legacy shell, and launching an agenda through the bridge takes at most twice as long as in the legacy shell, both measured side by side on the same workstation.
   \item \reqdef{N7} Localization: the UI is Czech, and full multi-language support is not a goal of the project. What matters is that the toolkit centralizes the shared terms (OK, Cancel, Add, Edit, Delete and similar), so they are written once and stay consistent.
   \item \reqdef{N8} Theming: the light and dark themes are consistent across the shell, the toolkit, and mini-apps.
   \item \reqdef{N9} Platform: Windows 10/11 desktop, distributed through the company's existing release channel.
   \item \reqdef{N10} AI-assistant friendliness: in-repo guidance files, explicit and strongly typed dependency injection as the default for new code.
   \item \reqdef{N11} Security: stored credentials are encrypted, and a failed update must leave the client startable. Full tamper-resistance of the license is explicitly out of reach while \req{N1} holds, because legacy clients must keep reading the compatible format.
-  \item \reqdef{N12} Responsiveness: the UI stays responsive during backend work. Long operations run under a progress overlay instead of freezing the window.
+  \item \reqdef{N12} Responsiveness: the UI never freezes for more than two seconds without a progress indicator, and long operations run under a progress overlay.
   \item \reqdef{N13} Robustness: an unhandled error in one window does not terminate the client, and agendas launched by the shell never outlive it, so no orphaned process holds a license slot.
-  \item \reqdef{N14} Coexistence of locks: record locks taken by one client are honored by the other, and a normal logout releases all locks of the session.
-  \item \reqdef{N15} Keyboard: the shell and the toolkit components are operable by keyboard, though in complex windows the mouse may remain the easier way.
-  \item \reqdef{N16} Error reporting: client errors are reported automatically to the company's support backend, and the user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, a deliberate narrowing against the legacy behavior. The user can also send a report on their own, without waiting for an error.
-  \item \reqdef{N17} Usage telemetry: the client records which windows and controls are used and sends the aggregate to the backend, where it helps decide what to port next. The telemetry carries usage counts, not the content of the user's work.
-  \item \reqdef{N18} Every non-trivial window offers a support panel with the company's support channels and version information that identifies the window's context.
-  \item \reqdef{N19} The client upgrade preserves stored user preferences. If the stored state is unknown or damaged, the client falls back to defaults.
-  \item \reqdef{N20} The inactivity limit is configured on the server, as in the legacy system, with an optional per-user override.
-  \item \reqdef{N21} The user can switch the theme and adjust the application font at runtime, the new-stack UI scales with the font, and the choice is shared by the M-line applications on the workstation. Legacy WinForms agendas keep their own look.
-  \item \reqdef{N22} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user tells a production installation from a test one.
-  \item \reqdef{N23} \emph{(nice to have)} An administrator can tell new-client sessions from legacy ones in the administration views.
-  \item \reqdef{N24} \emph{(nice to have)} Administrative interventions (forced logouts, license and permission changes) leave an audit record.
+  \item \reqdef{N14} Keyboard: the shell and the toolkit components are operable by keyboard, though in complex windows the mouse may remain the easier way.
 \end{itemize}
 
 \subsection{Mockups}
@@ -470,14 +469,13 @@ The update work recreates the coordination logic: when a version mismatch is det
 The evaluation follows the three kinds of outcomes the project produces: code, a deployed product, and a toolkit for developers.
 
 \medskip
-\noindent \textbf{Automated testing.} All testable public logic of the toolkit and the shell ships with unit tests on both stacks, and the tests run automatically before every push (\req{N3}).
+\noindent \textbf{Automated testing.} At least 80~\% of the non-visual types of the shell and the toolkit have unit tests, every Caché class with logic has a test class, and the tests run automatically before every push (\req{N3}).
 
 \medskip
 \noindent \textbf{Pilot deployment.} The success criteria are directly measurable: all M-line developer workstations use the new shell as their default daily tool, at least one customer pilot site uses the new shell as its only shell, and all still-relevant legacy agendas remain launchable through the new shell. The pilot also exercises the update outcome: its clients are updated through the new mechanism.
 
 \medskip
-\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company and runs continuously. The author gets feedback from the author of TemplateDesigner, as they use it, and shapes the toolkit accordingly. A deliberate goal of this loop is keeping the developer workflow close to the legacy one, so the switch costs the colleagues as little as possible. The toolkit is measured against the expectation stated in \req{N4}: a first agenda screen should be a matter of days, not weeks. Since porting agendas is out of scope, this is measured on the screens actually built with the toolkit during the project: the demonstrative mini-app and the TemplateDesigner screens adopting it.
-
+\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company and runs continuously. The author gets feedback from the author of TemplateDesigner, as they use it, and shapes the toolkit accordingly. A deliberate goal of this loop is keeping the developer workflow close to the legacy one, so the switch costs the colleagues as little as possible.
 \section{Risks}
 \label{sec:risks}
 
