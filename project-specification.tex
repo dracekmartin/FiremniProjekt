@@ -68,12 +68,12 @@ The author works for M-line software as a software engineer, primarily on the ED
 The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and as a demonstration of the processes and patterns being introduced.
 
 \medskip
-\noindent The expected outcomes, as committed to in the approved project proposal. A few criteria shifted since approval: the pilot criterion was tightened, the testing commitment was narrowed to testable logic, and the reuse preparation of the licensing model became a nice to have.
+\noindent The expected outcomes, as committed to in the approved project proposal. A few things shifted since approval, most notably the licensing tool was taken out of the project; section~\ref{sec:changes} lists the changes.
 
 \begin{itemize}
   \item \textbf{Testing infrastructure} on both the .NET and the Caché side, establishing a test-first culture absent from the legacy stack.
   \item \textbf{Architectural foundation and reusable toolkit} for future agenda implementations, including a backward-compatibility layer that hosts legacy agendas.
-  \item \textbf{Licensing modernization}: a new licensing data model and store, migration of the existing licenses into it, migration of the module tree definitions from XML files into the Caché backend, and the related internal tooling created or rewritten.
+  \item \textbf{Licensing configuration}: the module tree definitions move from XML files into the Caché backend, and the shell keeps checking and respecting the license. The new licensing store and its editor were taken out of the project (section~\ref{sec:changes}).
   \item \textbf{Update mechanism modernization} on both the client and the server side.
   \item \textbf{Modernized shell with a mini-app subsystem} and at least one demonstrative mini-app.
   \item \textbf{Pilot deployment} on developer workstations and at least one customer site switched fully to the new shell.
@@ -132,9 +132,6 @@ Figure~\ref{fig:c4-context} shows the system context. The author works inside th
   \node[c4person] (user) at (-3, 4.5) {%
     \textbf{End user}\\{\footnotesize [Person]}\\{\scriptsize Daily operator}
   };
-  \node[c4person] (licenser) at (6, 4.5) {%
-    \textbf{Licenser}\\{\footnotesize [Person]}\\{\scriptsize M-line employee}
-  };
   \node[c4container] (edison2) at (-6, 0) {%
     \textbf{EDISON 2}\\{\footnotesize [Software system]}\\{\scriptsize Modernized client}\\{\scriptsize (this project)}
   };
@@ -144,17 +141,12 @@ Figure~\ref{fig:c4-context} shows the system context. The author works inside th
   \node[c4database] (cache) at (-3, -4.5) {%
     \textbf{Customer Cach\'e backend}\\{\footnotesize [Database]}\\{\scriptsize Business data,}\\{\scriptsize module definitions}
   };
-  \node[c4database] (central) at (6, -4.5) {%
-    \textbf{M-line license archive}\\{\footnotesize [Software system]}\\{\scriptsize Licenses for all customers,}\\{\scriptsize one central instance}
-  };
   \draw[c4arrow] (user.south) -- node[midway, above left=-2pt] {Uses\\\textit{[Desktop UI]}} (edison2.north east);
   \draw[c4arrow] (user.south) -- node[midway, right] {Uses\\\textit{[Desktop UI]}} (legacy.north west);
   \draw[c4arrow] (edison2.south) -- node[midway, left=2pt] {Queries\\\textit{[HTTP]}} (cache.north west);
   \draw[c4arrow] (legacy.south) -- node[midway, right=2pt] {Queries\\\textit{[HTTP]}} (cache.north east);
-  \draw[c4arrow] (licenser.south) -- node[midway, right] {Maintains licenses\\\textit{[web editor]}} (central.north);
-  \draw[c4arrow] (cache.east) -- node[midway, above] {Pulls licenses\\\textit{[HTTP]}} (central.west);
 \end{tikzpicture}
-\caption{C4 System context diagram. EDISON 2, the focus of this project, runs next to the legacy client against the same customer Caché backend. Licenses live in M-line's central license archive, one instance serving all customers, and the customer backend pulls its license from there automatically. Both clients read it locally. The archive and its delivery exist today. The project gives the licensing data a real data model and store on the archive side and replaces the tooling around it.}
+\caption{C4 System context diagram. EDISON 2, the focus of this project, runs next to the legacy client against the same customer Caché backend, which also holds the module definitions once they move out of the XML files.}
 \label{fig:c4-context}
 \end{figure}
 
@@ -177,11 +169,7 @@ Figure~\ref{fig:c4-context} shows the system context. The author works inside th
 
 Other than the benefits for the new agendas, the previously mentioned points that generally fall under the umbrella of the shell will be improved and will be rid of a number of pain points (which slow down development):
 \begin{itemize}
-    \item Modernization of licensing will allow us to extend the system for new features. But even the old functionalities will be made more user-friendly, with the users being:
-    \begin{itemize}
-        \item Developers, when they need to add or modify the relationships between modules that they have developed.
-        \item Licenser (company employee creating/modifying licenses), who will be able to use a more modern tool to express the constraints coming from agreements with end users more easily. The tool will be more in line with other tools the company has recently developed.
-    \end{itemize}
+    \item Modernization of the licensing configuration gives developers a cleaner way to add or modify the relationships between modules that they have developed.
     \item Update mechanism modernization will allow improvements, or at least prepare the systems for it, because the old one is simply too tangled to be modified. It has known security and reliability issues that nobody dares to fix, which makes this project the right opportunity to rewrite it.
     \item The old shell has a number of tangled issues with user (in)activity which are effectively impossible to solve, and negatively impact the systems of licensing, updating and the agendas themselves.
 \end{itemize}
@@ -193,7 +181,7 @@ Other than the benefits for the new agendas, the previously mentioned points tha
 \noindent \textbf{AI-augmented development.} The project is developed with extensive use of AI coding assistants throughout. Rather than treating AI tooling as a passive convenience, the project will explicitly document the patterns and guardrails that make it productive: project memory in the form of in-repo guidance files, verification pipelines before accepting generated changes, and a preference for explicit and strongly typed dependency injection over hidden global states. This will increase the quality of the generated code and improve the whole process, including the code review.
 
 \medskip
-\noindent \textbf{Out of scope.} The project does not port existing agendas to the new stack. The demonstrative mini-app is written for an existing agenda, but the agenda itself is not rewritten. Adoption of the licensing data model by other M-line products is not part of the project (its product-agnostic design is requirement \req{L9}). The customer rollout ends with one pilot site switched to the new shell. The full rollout is a follow-up activity of the company. The project adds no new business functionality to the agendas themselves.
+\noindent \textbf{Out of scope.} The project does not port existing agendas to the new stack. The demonstrative mini-app is written for an existing agenda, but the agenda itself is not rewritten. The new licensing store, its editor, and the migration of existing licenses are not part of the project (section~\ref{sec:changes}). The customer rollout ends with one pilot site switched to the new shell. The full rollout is a follow-up activity of the company. The project adds no new business functionality to the agendas themselves.
 
 \medskip
 The description below reflects the current plan. The project runs inside the company's everyday business, so priorities may shift as the work progresses. Significant deviations from this specification will be documented and justified in the final developer documentation.
@@ -244,17 +232,13 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{M11} The user's mini-app layout persists per user and company across sessions.
 \end{itemize}
 
-\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). The licenser edits licenses, developers define which elements belong to which licensable feature, and the shell consumes the result at login through the customer backend.
+\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). Developers define which elements belong to which licensable feature, and the shell consumes the license at login through the customer backend.
 \begin{itemize}
-  \item \reqdef{L1} Licensing data gets a new, structured data model and store in M-line's central archive, which becomes the authoritative source behind the existing delivery to customer backends. The delivery, including its automatic renewal before expiry, keeps emitting the format compatible with legacy clients. The shell keeps reading the license from the customer backend.
-  \item \reqdef{L2} The shell consumes the license: it hides unlicensed modules, presents login rejections when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching limits and expiry. After the license expires, the installation stays read-only, as in the legacy system.
-  \item \reqdef{L3} An editor for the licenser covers the common workflows (creating, modifying, and issuing customer licenses) and follows the conventions of the company's newer internal tools. Less common cases may stay in the legacy tool for a time.
-  \item \reqdef{L4} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the Caché backend. Developers maintain them as Caché code in the development environment, and the definitions reach customer installations with releases like any other code, replacing the manual XML maintenance. The license editor works over the catalog of licensable features derived from these definitions. The migration preserves the semantics of the existing definitions (hidden and internal-only entries, input parameters, window defaults), and the tools that read the XML keep working until they are replaced.
-  \item \reqdef{L5} Existing licenses are migrated from the old store into the new data model with verified equivalence: a customer installation sees the same modules, limits, and validity before and after the migration.
-  \item \reqdef{L6} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in.
-  \item \reqdef{L7} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
-  \item \reqdef{L8} \emph{(nice to have)} The license can be refreshed at runtime without restarting the shell.
-  \item \reqdef{L9} \emph{(nice to have)} The licensing data model is designed product-agnostically so other M-line products can adopt it later.
+  \item \reqdef{L1} The shell consumes the license: it hides unlicensed modules, presents login rejections when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching limits and expiry. After the license expires, the installation stays read-only, as in the legacy system.
+  \item \reqdef{L2} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the Caché backend. Developers maintain them as Caché code in the development environment, and the definitions reach customer installations with releases like any other code, replacing the manual XML maintenance. The migration preserves the semantics of the existing definitions (hidden and internal-only entries, input parameters, window defaults), and the tools that read the XML keep working until they are replaced.
+  \item \reqdef{L3} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in.
+  \item \reqdef{L4} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
+  \item \reqdef{L5} \emph{(nice to have)} The license can be refreshed at runtime without restarting the shell.
 \end{itemize}
 
 \noindent \textbf{Update mechanism}
@@ -300,7 +284,7 @@ The same convention applies here: requirements marked \emph{(nice to have)} come
   \item \reqdef{N8} Theming: the light and dark themes are consistent across the shell, the toolkit, and mini-apps.
   \item \reqdef{N9} Platform: Windows 10/11 desktop, distributed through the company's existing release channel.
   \item \reqdef{N10} AI-assistant friendliness: in-repo guidance files, explicit and strongly typed dependency injection as the default for new code.
-  \item \reqdef{N11} Security: licensing data in the new store is validated server-side, stored credentials are encrypted, and a failed update must leave the client startable. Full tamper-resistance of the license is explicitly out of reach while \req{N1} holds, because legacy clients must keep reading the compatible format.
+  \item \reqdef{N11} Security: stored credentials are encrypted, and a failed update must leave the client startable. Full tamper-resistance of the license is explicitly out of reach while \req{N1} holds, because legacy clients must keep reading the compatible format.
   \item \reqdef{N12} Responsiveness: the UI stays responsive during backend work. Long operations run under a progress overlay instead of freezing the window.
   \item \reqdef{N13} Robustness: an unhandled error in one window does not terminate the client, and agendas launched by the shell never outlive it, so no orphaned process holds a license slot.
   \item \reqdef{N14} Coexistence of locks: record locks taken by one client are honored by the other, and a normal logout releases all locks of the session.
@@ -349,9 +333,6 @@ The screens below illustrate the proposed user interface design of the shell. \t
 \label{fig:mock-update}
 \end{figure}
 
-\medskip
-\noindent A legacy licensing tool exists but is being replaced wholesale, so instead of a screenshot, a short storyboard: the licenser opens the tool and sees the list of customers and their licenses with validity. Selecting a license shows the purchased feature set as a tree of licensable modules with checkboxes, the numeric limits, and the validity period. Saving stores the license in the M-line central archive, from where the existing delivery brings it to the customer installation. No file needs to be sent to the customer manually. The catalog of licensable features the licenser ticks comes from the module definitions that developers maintain as Caché code (\req{L4}).
-
 \subsection{Architecture}
 \label{sec:architecture}
 
@@ -366,11 +347,11 @@ The solution consists of three cooperating parts, shown as containers in figure~
 Agendas integrate with the shell through the mini-app interface: an agenda registers a factory for its mini-app view, and the shell instantiates the view, docks it, and manages its lifecycle and license checks. The shell never depends on concrete agendas. Each agenda only implements the interface the shell publishes.
 
 The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and view composability make it natural to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its ability to show agenda information has stayed so limited.
-Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L1} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the logical session established at login instead of opening their own.
+Two constraints shape the architecture throughout. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. This is the direct motivation for requirements \req{L2} and \req{N5}. On the client, one shared backend session per shell process is a design rule: agendas and mini-apps hosted by the shell reuse the logical session established at login instead of opening their own.
 
 The update work recreates the coordination logic: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is entangled with the user-inactivity issues mentioned earlier. The low-level apply engine may be retained (\req{U1}). Update packages live as files on the customer installation's server, from where both shells update themselves. M-line delivers releases to customer servers through the existing channel, modernized so that one pipeline serves both clients (\req{U3}). The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
 
-\begin{figure}[h]
+\begin{figure}[p]
 \centering
 \begin{tikzpicture}[
   scale=0.75, transform shape, font=\small,
@@ -453,13 +434,6 @@ The update work recreates the coordination logic: when a version mismatch is det
     \textbf{Customer Cach\'e backend}\\{\footnotesize [Database]}\\{\scriptsize Business data,}\\{\scriptsize module definitions}
   };
 
-  \node[c4database] (central) at (-8, -8) {%
-    \textbf{M-line license archive}\\{\footnotesize [Database]}\\{\scriptsize Licenses for}\\{\scriptsize all customers}
-  };
-
-  \node[c4container] (editor) at (-8, -11.5) {%
-    \textbf{License Editor}\\{\footnotesize [Web app]}\\{\scriptsize Licenser tooling}\\{\scriptsize (this project)}
-  };
 
   \draw[c4arrow] (user.south) -- node[pos=0.4, right] {Uses\\\textit{[Desktop UI]}} (shell.north);
   \draw[c4arrow] (shell.east) -- node[midway, above] {Consumes\\\textit{[.NET reference]}} (toolkit.west);
@@ -472,14 +446,10 @@ The update work recreates the coordination logic: when a version mismatch is det
   \draw[c4arrow] (legacy.south east) -- node[pos=0.5, left=2pt] {Queries\\\textit{[HTTP]}} (cache.west);
   \draw[c4arrow] (td.south) -- node[pos=0.5, right] {Queries\\\textit{[HTTP]}} (cache.east);
   \draw[c4arrow] (agendas.south) -- node[pos=0.3, right] {Queries\\\textit{[HTTP]}} (cache.north);
-  \draw[c4arrow] (cache.west) -- node[midway, above] {Pulls licenses\\\textit{[HTTP]}} (central.east);
-  \draw[c4arrow] (editor.north) -- node[midway, right] {Manages licenses} (central.south);
 \end{tikzpicture}
-\caption{C4 Container diagram for the EDISON product line. EDISON~2 Core (modernized shell, shared toolkit, legacy bridge) is the focus of this project; TemplateDesigner is a peer WPF agenda within EDISON~2 that also consumes the toolkit. The legacy bridge spawns existing WinForms agendas, which are also launched by the legacy shell. All client systems share the customer's Cach\'e backend, which after the migration also holds the module definitions and which pulls the customer's license from the M-line license archive. The license editor, built as part of this project, manages the archive. Update packages are not shown: both shells update from files on the customer installation's server.}
+\caption{C4 Container diagram for the EDISON product line. EDISON~2 Core (modernized shell, shared toolkit, legacy bridge) is the focus of this project; TemplateDesigner is a peer WPF agenda within EDISON~2 that also consumes the toolkit. The legacy bridge spawns existing WinForms agendas, which are also launched by the legacy shell. All client systems share the customer's Cach\'e backend, which after the migration also holds the module definitions. Update packages are not shown: both shells update from files on the customer installation's server.}
 \label{fig:c4-container}
 \end{figure}
-
-\clearpage
 
 \section{Platform and technologies}
 \label{sec:platform}
@@ -489,7 +459,6 @@ The update work recreates the coordination logic: when a version mismatch is det
   \item \textbf{Backend}: \href{https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9}{InterSystems Caché} and its \href{https://en.wikipedia.org/wiki/Cach%C3%A9_ObjectScript}{ObjectScript} language; communication over HTTP through the company's existing REST-style channel.
   \item \textbf{Testing}: \href{https://xunit.net/}{xUnit} and \href{https://nsubstitute.github.io/}{NSubstitute} on .NET; the native \href{https://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=TUNT}{\%UnitTest} facilities on Caché.
   \item \textbf{Mini-app hosting}: an established WPF docking/layout library. The concrete choice is an implementation decision.
-  \item \textbf{License editor}: a web-based internal tool, following the platform of the company's newer internal tools.
   \item \textbf{Development}: Git and GitHub with automated test execution hooked into the workflow; AI coding assistants with in-repo guidance files.
 \end{itemize}
 
@@ -504,7 +473,7 @@ The evaluation follows the three kinds of outcomes the project produces: code, a
 \noindent \textbf{Automated testing.} All testable public logic of the toolkit and the shell ships with unit tests on both stacks, and the tests run automatically before every push (\req{N3}).
 
 \medskip
-\noindent \textbf{Pilot deployment.} The success criteria are directly measurable: all M-line developer workstations use the new shell as their default daily tool, at least one customer pilot site uses the new shell as its only shell, and all still-relevant legacy agendas remain launchable through the new shell. The pilot also exercises the licensing and update outcomes: the pilot installation runs on a license served from the new store (migrated with the equivalence check from \req{L5}) and its clients are updated through the new mechanism.
+\noindent \textbf{Pilot deployment.} The success criteria are directly measurable: all M-line developer workstations use the new shell as their default daily tool, at least one customer pilot site uses the new shell as its only shell, and all still-relevant legacy agendas remain launchable through the new shell. The pilot also exercises the update outcome: its clients are updated through the new mechanism.
 
 \medskip
 \noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company and runs continuously. The author gets feedback from the author of TemplateDesigner, as they use it, and shapes the toolkit accordingly. A deliberate goal of this loop is keeping the developer workflow close to the legacy one, so the switch costs the colleagues as little as possible. The toolkit is measured against the expectation stated in \req{N4}: a first agenda screen should be a matter of days, not weeks. Since porting agendas is out of scope, this is measured on the screens actually built with the toolkit during the project: the demonstrative mini-app and the TemplateDesigner screens adopting it.
@@ -515,27 +484,25 @@ The evaluation follows the three kinds of outcomes the project produces: code, a
 \begin{itemize}
   \item \textbf{Breaking the legacy contract.} A change on the shared backend could break legacy agendas at customer sites. Mitigation: the legacy bridge isolates the old code instead of modifying it, whether all legacy agendas remain launchable is checked continuously during development, and questions about legacy behavior go to the consultant, who knows that part of the stack best.
   \item \textbf{Update mechanism underestimated.} The legacy updater's behavior is tangled and partly undocumented, and the plan is a recreation of the coordination logic around it. Mitigation: the first step adapts the legacy updater to also serve the new shell, so a working fallback exists the whole time and the rest of the project does not block on the new mechanism.
-  \item \textbf{Licensing migration underestimated.} The old license format is opaque and part of its semantics exists only in the code that reads and writes it. Mitigation: the migration is verified by the equivalence check from \req{L5}, and tests compare the encrypted license produced by the new tool byte by byte against the old one, not least because the cipher itself is aging. The data model comes before the editor. Fallback: the old store and its delivery keep running untouched until the equivalence is proven, so the migration can be re-run until it is right.
   \item \textbf{Problems at the pilot site.} The pilot does not depend on a customer volunteering: the company deploys the new shell to a selected site as part of a regular update, not as an opt-in, at least for a time. The real risk is an issue severe enough to send the site back to the legacy shell. Mitigation: months of daily internal use precede the pilot, and both shells stay installed side by side (\req{N2}), so a temporary return is possible.
   \item \textbf{Toolkit validated by only two consumers.} An API that fits the shell and TemplateDesigner may still not generalize to future agendas. Mitigation: the API is written to be extended, it is treated as provisional and versioned, design reviews are held with the TemplateDesigner author, and the feedback collected in the evaluation is used to correct the design.
   \item \textbf{AI-generated code quality.} Extensive use of AI assistants risks introducing many subtle defects. Mitigation: generated changes go through the same tests and code review as any other change, and the concrete rules that keep the assistants reliable (in-repo guidance files) are written down and become part of the AI documentation.
-  \item \textbf{Scope and timeline pressure.} The licensing or update work may slip. Mitigation: the schedule puts the foundation first (testing, toolkit, shell), and each outcome can be reduced to a smaller but still useful version. For licensing, the data model and migration come before the editor.
+  \item \textbf{Scope and timeline pressure.} The update work or the mini-app subsystem may slip. Mitigation: the schedule puts the foundation first (testing, toolkit, shell), and each outcome can be reduced to a smaller but still useful version.
   \item \textbf{Company priorities.} As an employee, the author can be pulled to urgent company work. Mitigation: the milestones are agreed with the company and progress is followed by the author's manager.
 \end{itemize}
 
 \section{Milestones / Deliverables}
 \label{sec:milestones}
 
-The work is structured into seven milestones, each ending with something demonstrable:
+The work is structured into six milestones, each ending with something demonstrable:
 
 \begin{itemize}
   \item \textbf{MS1 Testing infrastructure} -- test projects on both stacks wired into the development workflow.
   \item \textbf{MS2 Toolkit foundation} -- the core components, theming, and backend access, exercised by a first minimal version of the shell.
   \item \textbf{MS3 Shell prototype} -- login, module tree, and launching legacy agendas, all in daily use on developer machines.
   \item \textbf{MS4 Mini-app subsystem} -- the mini-app interface and hosting, with the demonstrative mini-app running over real data.
-  \item \textbf{MS5 Licensing modernization} -- the new data model and store in place, existing licenses migrated with verified equivalence, tooling usable by the licenser and developers.
-  \item \textbf{MS6 Update mechanism} -- the new client detects a version mismatch and updates itself from the customer server.
-  \item \textbf{MS7 Pilot deployment} -- all developer workstations on the new shell by default and a customer pilot site using only the new shell.
+  \item \textbf{MS5 Update mechanism} -- the new client detects a version mismatch and updates itself from the customer server.
+  \item \textbf{MS6 Pilot deployment} -- all developer workstations on the new shell by default and a customer pilot site using only the new shell.
 \end{itemize}
 
 \noindent The academic deliverable consists of:
@@ -546,7 +513,7 @@ The work is structured into seven milestones, each ending with something demonst
   \item \textbf{User documentation} for the new shell, written for end users and primarily highlighting new features and differences from the old shell.
 \end{itemize}
 
-The project is developed in M-line's private GitHub repositories (the license editor lives in a separate repository from the client work), so the delivery is a snapshot rather than the full repositories:
+The project is developed in M-line's private GitHub repositories, so the delivery is a snapshot rather than the full repositories:
 \begin{itemize}
   \item Source code and documentation files written by the author
   \item A document specifying files that were also developed by others, describing what was done by the author
@@ -567,21 +534,19 @@ The ordering follows the dependencies: the testing infrastructure and the toolki
  \hline
  MS1 Testing infrastructure & Test setup on .NET and Caché, workflow automation & 6/2026 & 6 \\
  \hline
- MS2 Toolkit foundation & Core components, theming, backend access, tests & 6 -- 8/2026 & 14 \\
+ MS2 Toolkit foundation & Core components, theming, backend access, tests & 6 -- 8/2026 & 17 \\
  \hline
- MS3 Shell prototype & Login, module tree, legacy bridge, daily internal use & 8 -- 10/2026 & 14 \\
+ MS3 Shell prototype & Login, module tree, legacy bridge, daily internal use & 8 -- 10/2026 & 17 \\
  \hline
  MS4 Mini-app subsystem & Interface, hosting, demonstrative mini-app & 10/2026 & 6 \\
  \hline
- MS5 Licensing modernization & Data model, migration, licenser and developer tooling & 10 -- 11/2026 & 12 \\
+ MS5 Update mechanism & Update coordination, client and server integration & 10 -- 12/2026 & 12 \\
  \hline
- MS6 Update mechanism & Update coordination, client and server integration & 11 -- 12/2026 & 9 \\
+ MS6 Pilot deployment & Developer workstations, customer pilot site & 1/2027 & 5 \\
  \hline
- MS7 Pilot deployment & Developer workstations, customer pilot site & 1/2027 & 5 \\
+ Documentation & Developer, AI, and user documentation; snapshot preparation & 1 -- 2/2027 & 10 \\
  \hline
- Documentation & Developer, AI, and user documentation; snapshot preparation & 1 -- 2/2027 & 8 \\
- \hline
- Evaluation & Success criteria check, developer feedback collection & 2/2027 & 4 \\
+ Evaluation & Success criteria check, developer feedback collection & 2/2027 & 5 \\
  \hline
 \end{tabular}
 
@@ -600,9 +565,19 @@ The company consultant is available continuously as a colleague. His role is des
 
 \begin{itemize}
   \item \textbf{Consultant} (Bc. Jiří Krhánek, \href{mailto:jiri.krhanek@m-line.cz}{jiri.krhanek@m-line.cz}) -- a software engineer responsible for the biggest portion of the legacy stack the project interacts with. He is the first point of contact for questions about legacy behavior and the legacy contract (the bridge, licensing, updates).
-  \item \textbf{The licenser} -- the primary user of the new license editor. The editor's workflows are designed around his work and shaped by his feedback.
   \item \textbf{TemplateDesigner author} -- the colleague developing the second consumer of the toolkit. The toolkit API is designed in a feedback loop with him, and his needs influence which parts of the toolkit are prioritized.
   \item \textbf{The rest of the team} -- daily users of the new shell on their workstations during the project, and the future consumers of the toolkit and its documentation after the project ends.
 \end{itemize}
+
+\section{Changes against the proposal}
+\label{sec:changes}
+
+The proposal was approved in June 2026. This specification departs from it in a few places, all agreed with the supervisor.
+
+\medskip
+\noindent \textbf{The licensing tool was taken out.} The proposal promised a new licensing data model, a migration of the existing licenses into it, and a new tool for the licenser. This part turned out to be very isolated from the rest of the project: it is a separate web stack with its own data model, which the committee would have to review on top of the client work, and the remaining scope (shell, toolkit, mini-apps, update mechanism, pilot) carries enough complexity on its own. What stays is the part that touches the client: the shell keeps checking and respecting the license (\req{L1}), and the module tree definitions move from XML files into the Caché backend (\req{L2}). The preparation of the licensing model for reuse in other M-line products dropped out together with the tool.
+
+\medskip
+\noindent \textbf{The pilot criterion was tightened.} The proposal spoke of a customer site running the new shell in parallel with the legacy one. The pilot site now switches to the new shell as its only shell, so that its users are made to actually try it.
 
 \end{document}
