@@ -35,9 +35,6 @@
 \title{\ProjectTitle}
 \author{\StudentsFullName}
 
-% Placeholder box for screenshots that will be added later.
-\newcommand{\mockupbox}[1]{\fbox{\parbox[c][6.5cm][c]{0.82\textwidth}{\centering\itshape #1}}}
-
 % Requirement anchors: \reqdef{S1} defines a requirement, \req{S1} links to it from prose.
 \newcommand{\reqdef}[1]{\hypertarget{req:#1}{\textbf{#1.}}}
 \newcommand{\req}[1]{\hyperlink{req:#1}{#1}}
@@ -302,34 +299,27 @@ Each non-functional requirement states how it will be checked.
 \subsection{Mockups}
 \label{sec:mockups}
 
-The screens below show the proposed user interface of the shell. \textcolor{red}{TODO: replace the placeholders with screenshots.}
+The screens below show the proposed user interface of the shell.
 
 \begin{figure}[H]
 \centering
-\mockupbox{Login screen: username and password, a remember-me option. Where the backend allows it, the login is silent under the Windows identity and this screen does not appear. The company context is established automatically (the last used company), and switching is available later from the main window. On a version mismatch the update prompt (figure~\ref{fig:mock-update}) comes before this screen.}
-\caption{Login.}
+\includegraphics[width=0.88\textwidth]{img/login.png}
+\caption{Login window. The form takes the user name and password, with the option to remember the password where the backend permits it (\protect\req{S16}). The company context is established automatically, so there is no company selection. The three panels next to the form are the built-in mini-apps with company news, the user wiki, and the training offer (\protect\req{M6}), available before the user logs in. Where the backend allows it, the login is silent under the Windows identity and this window does not appear (\protect\req{S15}).}
 \label{fig:mock-login}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\mockupbox{Main window: the module tree on the left with search box and favorites, the mini-app hosting area filling the rest of the window, a status bar with the logged-in user, company, client version, and license information.}
-\caption{Main shell window with the module tree and the mini-app area.}
+\includegraphics[width=0.88\textwidth]{img/main-window.png}
+\caption{Main window after login. The module tree with the search box and the favorites toolbar on the left (\protect\req{S3}), the company news panel at the top, and the mini-app hosting area with the empty desktop mini-app and its hint on how to add modules (\protect\req{S13}). The status bar shows the company, the user, and the client version (\protect\req{S17}).}
 \label{fig:mock-main}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\mockupbox{Mini-apps in use: mini-apps docked in the hosting area showing agenda summaries, and the menu from which the user adds further available mini-apps.}
-\caption{Mini-apps in the main window, with the per-user choice.}
+\includegraphics[width=0.88\textwidth]{img/mini-apps.png}
+\caption{Mini-apps in use. The desktop mini-app holds shortcut tiles for the modules the user marked as favorites in the tree (the stars). Next to it two at-a-glance panels taken over from the legacy shell (\protect\req{M7}) are docked in the hosting area: the dispatching overview and the vehicle maintenance overdue list, both showing agenda data through the toolkit's data list (\protect\req{T2}).}
 \label{fig:mock-miniapps}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\mockupbox{Update prompt: the client has detected a newer server version and informs the user that a mandatory update will be downloaded and applied, with progress indication and an automatic restart.}
-\caption{Mandatory self-update on version mismatch.}
-\label{fig:mock-update}
 \end{figure}
 
 \subsection{Architecture}
