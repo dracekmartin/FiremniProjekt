@@ -204,13 +204,13 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{S4} The module tree supports text search.
   \item \reqdef{S5} The user can mark favorite modules for quick access.
   \item \reqdef{S6} Every still-relevant legacy WinForms agenda can be launched through a compatibility bridge that passes the established session, company context, the user's licensed permissions, and the license state (including the read-only mode after expiry). The same holds for legacy windows that are not agendas, such as the data export and import used by developers, and for applications built on the new stack, which the shell can launch with the same context.
-  \item \reqdef{S7} Favorites and layouts persist per user and company, the last company per user, and all are restored on the next login.
+  \item \reqdef{S7} Favorites and layouts persist per user and company, and the last used company per user. All of them are restored at the next login.
   \item \reqdef{S8} The shell handles the session lifecycle: inactivity and forced logout with a user-visible countdown, detection of connection loss, and orderly shutdown. Closing the shell warns the user that all open agenda windows will close, and one action closes all open windows at once.
   \item \reqdef{S9} The shell verifies client/server version compatibility before and during a session. A mismatch at startup triggers the mandatory update (\req{U1}), a mid-session mismatch asks the user to restart so that the update can run, and the shell refuses to operate only when the update cannot proceed.
   \item \reqdef{S10} At first launch on an unconfigured workstation, the shell asks for the server connection, verifies it, and continues without a restart.
   \item \reqdef{S11} Users with backend-managed accounts can change their password in the shell, and the backend can require a password change at the next login.
   \item \reqdef{S12} The user can switch to a different user account at runtime, which closes open agenda windows first.
-  \item \reqdef{S13} The shell offers a desktop area where the user arranges shortcut tiles for modules and launches them, persisted per user and company (the desktop is itself a mini-app living in the hosting area).
+  \item \reqdef{S13} The shell offers a desktop area where the user arranges shortcut tiles for modules and launches them, persisted per user and company (the desktop is itself a mini-app placed in the hosting area).
   \item \reqdef{S14} The shell lists the running agendas and can bring any of them to the front, and launching an agenda that already runs focuses the existing window instead of starting a second copy.
   \item \reqdef{S15} Where the backend allows it, the shell signs the user in under their Windows identity without showing the login dialog.
   \item \reqdef{S16} The login screen can remember the user name and, where the backend permits it, the password, stored encrypted on the workstation.
@@ -230,16 +230,16 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{M4} A mini-app is offered only when its parent agenda is licensed and the user is permitted to use it.
   \item \reqdef{M5} At least one demonstrative mini-app working over real agenda data is delivered.
   \item \reqdef{M6} A permanently visible panel shows company news and announcements (releases, training and similar), and the user cannot remove it. Its content comes from the company's support portal, where M-line staff maintain it.
-  \item \reqdef{M7} The at-a-glance panels of the legacy shell remain available as mini-apps through their existing server contract.
+  \item \reqdef{M7} The overview panels of the legacy shell remain available as mini-apps through their existing server contract.
   \item \reqdef{M8} Open mini-apps can refresh their content automatically at a chosen interval. For the legacy panels this reloads the data prepared by a server task, and the recomputation stays on the server.
   \item \reqdef{M9} Mini-apps respect the user's functional restrictions (the mechanism that narrows which data a user sees, distinct from permissions) when showing data, as the legacy panels do.
   \item \reqdef{M10} After a user or company switch, mini-apps reopen from the layout of the new context and never show data of the previous session. A damaged stored layout must not prevent the shell from starting.
   \item \reqdef{M11} The user's mini-app layout persists per user and company across sessions.
 \end{itemize}
 
-\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). Developers define which elements belong to which licensable feature, and the shell consumes the license at login through the customer backend.
+\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). Developers define which elements belong to which licensable feature, and the shell respects the license at login through the customer backend.
 \begin{itemize}
-  \item \reqdef{L1} The shell consumes the license: it hides unlicensed modules, shows the rejection of a login when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching expiry and, where the backend reports it, for approaching numeric limits. After the license expires, the installation stays read-only, as in the legacy system.
+  \item \reqdef{L1} The shell respects the license: it hides unlicensed modules, shows the rejection of a login when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching expiry and, where the backend reports it, for approaching numeric limits. After the license expires, the installation stays read-only, as in the legacy system.
   \item \reqdef{L2} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the Caché backend. Developers maintain them as Caché code in the development environment, and the definitions reach customer installations with releases like any other code, replacing the manual XML maintenance. The migration preserves the semantics of the existing definitions (hidden and internal-only entries, input parameters, window defaults), and the tools that read the XML keep working until they are replaced. During the transition one of the two forms is generated from the other, so that no definition is maintained twice.
   \item \reqdef{L3} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in.
   \item \reqdef{L4} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
@@ -267,18 +267,18 @@ The requirements are grouped by project outcome and numbered for reference. Requ
 \begin{itemize}
   \item \reqdef{T1} A view-model base with command creation, unified error presentation, and backend access, testable without a running UI.
   \item \reqdef{T2} Common controls: a server-driven data list with filtering and column persistence, input forms defined and validated by the backend (so a form change does not require redistributing clients), toolbars, standard dialogs, and a progress overlay.
-  \item \reqdef{T3} Theming through shared design tokens, with a light and a dark theme.
+  \item \reqdef{T3} Theming through shared theme resources (colors, fonts, spacing), with a light and a dark theme.
   \item \reqdef{T4} A typed backend-access layer wrapping the Caché communication, with one shared session per client process.
   \item \reqdef{T5} A persistence service for per-user and per-company preferences.
   \item \reqdef{T6} A documented usage guide and test patterns for future agenda implementations, including runnable mock implementations of the backend-access layer and a test runner for the Caché side, so agenda logic is testable on both stacks without a live installation.
   \item \reqdef{T7} Data lists can export their contents, and printing is available where the legacy client offers it.
   \item \reqdef{T8} Windows remember their position and size per user and company, the user can reset all window layouts to their defaults, and a window with unsaved changes asks for confirmation before it closes. All of this comes from the toolkit, not from each window.
-  \item \reqdef{T9} Client errors are reported automatically to the company's support backend, and the user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, a deliberate narrowing compared to the legacy behavior. The user can also send a report on their own, without waiting for an error.
+  \item \reqdef{T9} Client errors are reported automatically to the company's support portal, and the user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, narrower than the legacy behavior. The user can also send a report on their own, without waiting for an error.
   \item \reqdef{T10} The client records which windows and controls are used and sends the usage events (window, control, time) to the backend, which aggregates them to help decide what to port next. The events carry no content of the user's work.
   \item \reqdef{T11} Every non-trivial window offers a support panel with the company's support channels and version information that identifies the window's context.
   \item \reqdef{T12} The client upgrade preserves stored user preferences. If the stored state is unknown or damaged, the client falls back to defaults.
   \item \reqdef{T13} The user can switch the theme and adjust the application font at runtime, the new-stack UI scales with the font, and the choice is shared by the M-line applications on the workstation. Legacy WinForms agendas keep their own look.
-  \item \reqdef{T14} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user tells a production installation from a test one.
+  \item \reqdef{T14} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user can tell a production installation from a test one.
 \end{itemize}
 
 \subsection{Non-Functional requirements}
@@ -291,16 +291,16 @@ Each non-functional requirement states how it will be checked.
   \item \reqdef{N2} Parallel operation: the new and the legacy shell are installable and runnable side by side on one workstation and one installation. Checked on the developer workstations, which run this way for the whole project.
   \item \reqdef{N3} Testability: at least 80~\% of the non-visual types of the shell and the toolkit (view models, services, parsers) have unit tests, every Caché class with logic has a test class, and the tests run automatically before every push on the developer machines. Checked by counting the types and their tests in the repository.
   \item \reqdef{N4} Extensibility: adding an agenda built on the new stack requires only its registration, not changes to the shell. Checked on the demonstrative mini-app and on TemplateDesigner, which are added without touching the shell.
-  \item \reqdef{N5} Server-side configurability: per-customer data (licensing, the inactivity limit) and shared definitions that must change without a client release (the module tree) live in a database, not in the client binaries. Checked by changing the inactivity limit and a module definition on a test installation without redistributing clients.
+  \item \reqdef{N5} Server-side configurability: per-customer data (licensing, the inactivity limit) and shared definitions that must change without a client release (the module tree) live in the Caché backend, not in the client binaries. Checked by changing the inactivity limit and a module definition on a test installation without redistributing clients.
   \item \reqdef{N6} Performance: the shell starts faster than the legacy shell, and launching an agenda through the bridge takes at most twice as long as in the legacy shell, both measured side by side on the same workstation.
   \item \reqdef{N7} Localization: the UI is Czech, and full multi-language support is not a goal of the project. The toolkit keeps the shared terms (OK, Cancel, Add, Edit, Delete and similar) in one place, so they are written once and stay consistent. Checked by searching the shell and the toolkit for duplicated shared terms.
-  \item \reqdef{N8} Theming: the light and dark themes are consistent across the shell, the toolkit, and mini-apps. Checked by going through every window in both themes before the pilot.
-  \item \reqdef{N9} Platform: Windows 10/11 desktop, distributed through the company's existing release channel. Checked by the pilot installation itself.
-  \item \reqdef{N10} AI-assistant friendliness: in-repo guidance files, and explicit, typed dependencies as the default for new code, with the toolkit's shared services reached through one documented place. Checked by reviewing new code against the guidance files.
+  \item \reqdef{N8} Theming: the light and dark themes are consistent across the shell, the toolkit, and mini-apps. Every window is walked through in both themes before the pilot.
+  \item \reqdef{N9} Platform: Windows 10/11 desktop, distributed through the company's existing release channel. The pilot installation itself is the check.
+  \item \reqdef{N10} Support for AI coding assistants: in-repo guidance files, and explicit, typed dependencies as the default for new code, with the toolkit's shared services reached through one documented place. Checked by reviewing new code against the guidance files.
   \item \reqdef{N11} Security: stored credentials are encrypted, and a failed update must leave the client startable. Full tamper-resistance of the license is out of reach while \req{N1} holds, because legacy clients must keep reading the compatible format. Checked by inspecting the stored credentials and by interrupting an update on a test workstation.
   \item \reqdef{N12} Responsiveness: the UI never freezes for more than two seconds without a progress indicator, and long operations run under a progress overlay. Checked during the daily internal use: a freeze noticed by the developers counts as a defect.
   \item \reqdef{N13} Robustness: an unhandled error in one window does not terminate the client, and agendas launched by the shell never outlive it, so no orphaned process keeps record locks or a stale session alive. Checked by raising an error in a test window and by killing the shell with agendas open.
-  \item \reqdef{N14} Keyboard: the shell and the toolkit components are operable by keyboard, though in complex windows the mouse may remain the easier way. Checked by walking through login, the module tree, and launching an agenda without a mouse.
+  \item \reqdef{N14} Keyboard: the shell and the toolkit components are operable by keyboard, though in complex windows the mouse may remain the easier way. The check is a walk through login, the module tree, and launching an agenda without a mouse.
 \end{itemize}
 
 \subsection{Mockups}
@@ -318,14 +318,14 @@ The screens below show the proposed user interface of the shell.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.88\textwidth]{img/main-window.png}
-\caption{Main window after login, captured from the development build. The module tree with the search box and the favorites toolbar on the left (\protect\req{S3}), the support portal panel at the top, and the mini-app hosting area with the empty desktop mini-app and its hint on how to add modules (\protect\req{S13}). The status bar carries the company, the user, and the client version (\protect\req{S17}); in this capture the user is blanked out and the development build reports no release version.}
+\caption{Main window after login, captured from the development build. The module tree with the search box and the favorites toolbar on the left (\protect\req{S3}), the support portal panel at the top, and the mini-app hosting area with the empty desktop mini-app and its hint on how to add modules (\protect\req{S13}). The status bar carries the company, the user, and the client version (\protect\req{S17}). In this capture the user is blanked out and the development build reports no release version.}
 \label{fig:mock-main}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.88\textwidth]{img/mini-apps.png}
-\caption{Mini-apps in use, captured from the development build with the data blanked out. The desktop mini-app holds shortcut tiles for the modules the user marked as favorites in the tree (the stars). Next to it two at-a-glance panels taken over from the legacy shell (\protect\req{M7}) are docked in the hosting area: the dispatching overview and the vehicle maintenance overdue list.}
+\caption{Mini-apps in use, captured from the development build with the data blanked out. The desktop mini-app holds shortcut tiles for the modules the user marked as favorites in the tree (the stars). Next to it two overview panels taken over from the legacy shell (\protect\req{M7}) are docked in the hosting area: the dispatching overview and the vehicle maintenance overdue list.}
 \label{fig:mock-miniapps}
 \end{figure}
 
@@ -342,11 +342,11 @@ The solution consists of three cooperating parts, shown as containers in figure~
 
 Agendas integrate with the shell through the mini-app interface. An agenda registers a factory for its mini-app view, and the shell instantiates the view, docks it, and manages its lifecycle and license checks. The shell never depends on concrete agendas. Each agenda only implements the interface the shell publishes.
 
-The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and view composability make it natural to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its ability to show agenda information has stayed so limited.
+The choice of WPF over WinForms matters especially for mini-apps and theming. Data binding, templating, and composable views make it easy to embed many small live views inside one window and to restyle them centrally. The legacy shell could only approximate this, which is why its ability to show agenda information has stayed so limited.
 
-Two constraints shape the architecture. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a database-side change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to a database rather than to the client. Requirements \req{L2} and \req{N5} come from this. One more rule holds on the client: a shell process has one shared backend session, and the agendas and mini-apps it hosts reuse the logical session established at login instead of opening their own.
+Two constraints shape the architecture. First, no breaking changes to the legacy contract are permitted, which is why the legacy bridge exists as a separate layer and why both shells must keep working against the same backend during the transition. Second, deploying a backend change is much faster than redistributing clients, so anything expected to change per deployment or per customer (the module tree, licensing data) belongs to the backend rather than to the client. Requirements \req{L2} and \req{N5} come from this. One more rule holds on the client: a shell process has one shared backend session, and the agendas and mini-apps it hosts reuse the logical session established at login instead of opening their own.
 
-The update work recreates the coordination logic: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is entangled with the user-inactivity issues mentioned earlier. The low-level apply engine may stay (\req{U1}). Update packages live as files on the customer installation's server, from where both shells update themselves. The project modernizes the download of release files to the customer server and to the workstations (\req{U3}); how M-line builds and publishes a release stays as it is. The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
+The update work recreates the coordination logic: when a version mismatch is detected, how the mandatory update is enforced, and how it cooperates with the session lifecycle. The existing logic is too tangled to modify incrementally, and its behavior is tied to the user-inactivity issues mentioned earlier. The low-level apply engine may stay (\req{U1}). Update packages are stored as files on the customer installation's server, from where both shells update themselves. The project modernizes the download of release files to the customer server and to the workstations (\req{U3}). How M-line builds and publishes a release stays as it is. The new mechanism must leave the legacy clients' update path untouched (\req{U4}).
 
 \begin{figure}[p]
 \centering
@@ -470,22 +470,22 @@ The evaluation follows the three kinds of outcomes the project produces: code, a
 \noindent \textbf{Automated testing.} At least 80~\% of the non-visual types of the shell and the toolkit have unit tests, every Caché class with logic has a test class, and the tests run automatically before every push (\req{N3}).
 
 \medskip
-\noindent \textbf{Pilot deployment.} The success criteria are measurable: all M-line developer workstations use the new shell as their default daily tool, at least one customer pilot site uses the new shell as its only shell, and all still-relevant legacy agendas remain launchable through the new shell. The pilot also covers the remaining outcomes: the installation runs on the module tree served from Caché (\req{L2}), the demonstrative mini-app (\req{M5}) is available there, and its clients are updated through the new mechanism.
+\noindent \textbf{Pilot deployment.} Success means that all M-line developer workstations use the new shell as their default daily tool, that at least one customer pilot site uses the new shell as its only shell, and that all still-relevant legacy agendas remain launchable through the new shell. The pilot also covers the remaining outcomes: the installation runs on the module tree served from Caché (\req{L2}), the demonstrative mini-app (\req{M5}) is available there, and its clients are updated through the new mechanism.
 
 \medskip
-\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company and runs continuously. The author collects the TemplateDesigner author's feedback from using the toolkit and shapes it accordingly. One goal of this feedback is to keep the developer workflow close to the legacy one where that does not conflict with the test-first approach, so the switch costs the colleagues as little as possible.
+\noindent \textbf{Developer study.} The toolkit's users are developers, so the user study takes place inside the company and runs continuously. The author collects the TemplateDesigner author's feedback from using the toolkit and adjusts the toolkit accordingly. One goal of this feedback is to keep the developer workflow close to the legacy one where that does not conflict with the test-first approach, so the switch costs the colleagues as little as possible.
 
 \section{Risks}
 \label{sec:risks}
 
 \begin{itemize}
   \item \textbf{Breaking the legacy contract.} A change on the shared backend could break legacy agendas at customer sites. Mitigation: the legacy bridge isolates the old code instead of modifying it. Whether all legacy agendas remain launchable is checked continuously during development, and questions about legacy behavior go to the consultant, who knows that part of the stack best.
-  \item \textbf{Update mechanism underestimated.} The legacy updater's behavior is tangled and partly undocumented, and the plan is to recreate the coordination logic around it. Mitigation: the first step adapts the legacy updater to also serve the new shell, so a working fallback exists the whole time and the rest of the project does not block on the new mechanism.
-  \item \textbf{Problems at the pilot site.} The pilot does not depend on a customer volunteering. The company deploys the new shell to a selected site as part of a regular update. The site is informed, but the switch is not optional for its users. The real risk is an issue severe enough to send the site back to the legacy shell. Mitigation: months of daily internal use precede the pilot, and both shells stay installed side by side (\req{N2}), so a temporary return is possible.
+  \item \textbf{Update mechanism underestimated.} The legacy updater's behavior is tangled and partly undocumented, and the plan is to recreate the coordination logic around it. Mitigation: the first step adapts the legacy updater to also serve the new shell, so a working fallback exists the whole time and the rest of the project does not wait for the new mechanism.
+  \item \textbf{Problems at the pilot site.} The pilot does not depend on a customer volunteering. The company deploys the new shell to a selected site as part of a regular update. The site is informed, but the switch is not optional for its users. The risk is an issue severe enough to send the site back to the legacy shell. Mitigation: months of daily internal use precede the pilot, and both shells stay installed side by side (\req{N2}), so a temporary return is possible.
   \item \textbf{Toolkit validated by only two consumers.} An API that fits the shell and TemplateDesigner may still not generalize to future agendas. Mitigation: the API is written to be extended and treated as provisional and versioned, the author holds design reviews with the TemplateDesigner author, and the design is corrected from the feedback collected in the evaluation.
   \item \textbf{AI-generated code quality.} Extensive use of AI assistants risks introducing many subtle defects. Mitigation: generated changes go through the same tests and code review as any other change, and the concrete rules that keep the assistants reliable (in-repo guidance files) are written down and become part of the AI documentation.
   \item \textbf{Scope and timeline pressure.} The update work or the mini-app subsystem may slip. Mitigation: the schedule puts the foundation first (testing, toolkit, shell), and each outcome can be reduced to a smaller but still useful version.
-  \item \textbf{Company priorities.} As an employee, the author can be pulled to urgent company work. Mitigation: the project is itself a company priority, so the company has its own interest in finishing it, and the other agendas in the author's care are in maintenance mode only. The milestones are agreed with the company, progress is followed by the author's manager, and any loss of capacity shows up in the next report to the supervisor.
+  \item \textbf{Company priorities.} As an employee, the author can be pulled away to urgent company work. Mitigation: the project is itself a company priority, so the company has its own interest in finishing it, and the other agendas in the author's care are in maintenance mode only. The milestones are agreed with the company, progress is followed by the author's manager, and any loss of capacity shows up in the next report to the supervisor.
   \item \textbf{Late-identified requirements.} Legacy behavior or user needs discovered late in the project can shift the assignment in small ways. Mitigation: small changes go into the regular reports to the supervisor, larger ones are discussed with him, and all of them are written up in the final documentation as justified deviations from this specification, as the faculty rules expect.
 \end{itemize}
 
@@ -522,7 +522,7 @@ The academic supervisor, opponent, and Committee receive access to the above on 
 \section{Time Schedule}
 \label{sec:schedule}
 
-The ordering follows the dependencies: the testing infrastructure and the toolkit come first because everything else builds on them. The shell enters daily use on developer machines as early as possible, so that the pilot deployment at the end carries little risk. Licensing and the update mechanism follow once the foundation is stable, partly in parallel. The plan assumes about two full working days per week for the project, around 78 man-days over the nine months.
+The ordering follows the dependencies. The testing infrastructure and the toolkit come first because everything else builds on them. The shell enters daily use on developer machines as early as possible, so that the pilot deployment at the end carries little risk. Licensing and the update mechanism follow once the foundation is stable, partly in parallel. The plan assumes about two full working days per week for the project, around 78 man-days over the nine months.
 
 \medskip
 \hskip-0.5cm
@@ -555,7 +555,7 @@ The author is a regular member of the M-line development team, and the project i
 
 \subsection{Consulting plan}
 
-The author sends the supervisor a short written report every two weeks, and they meet roughly once a month for about an hour, in person or online, by agreement, to go over the report, open questions, and the next milestone.
+The author sends the supervisor a short written report every two weeks. They meet roughly once a month for about an hour, in person or online as agreed, to go over the report, open questions, and the next milestone.
 
 The company consultant is available continuously as a colleague. His role is described below.
 
@@ -582,6 +582,6 @@ The proposal was approved in June 2026. This specification departs from it in a 
 \noindent \textbf{The update engine may stay.} The proposal expected the update mechanism to be most likely a full recreation. The project recreates the coordination around updates (detection, enforcement, cooperation with the session lifecycle) and modernizes the download of release files. The existing low-level engine that copies and applies the files may stay (\req{U1}).
 
 \medskip
-\noindent \textbf{One static entry point for shared services.} The proposal prefers explicit dependency injection over hidden global state. New code follows that, but the toolkit deliberately keeps one documented static entry point (a service locator) through which controls reach shared services such as theming, strings, and backend access, instead of a dependency injection container (\req{N10}).
+\noindent \textbf{One static entry point for shared services.} The proposal prefers explicit dependency injection over hidden global state. New code follows that, but the toolkit keeps one documented static entry point (a service locator) through which controls reach shared services such as theming, strings, and backend access, instead of a dependency injection container (\req{N10}).
 
 \end{document}
