@@ -14,7 +14,7 @@ Doplňovat průběžně jak narazíme na další body.
 
 ## Architectural foundation and reusable toolkit
 
-- **Speed claim:** *"enabling rapid construction of new agenda functionalities"*. Specification může mít explicit success metric — např. "first end-to-end agenda port using the toolkit should fit within X developer-days" — měřitelný evaluation criterion pro projekt.
+- **Speed claim:** *"enabling rapid construction of new agenda functionalities"*. Specification může mít explicit success metric — např. "first end-to-end agenda port using the toolkit should fit within X developer-days" — měřitelný evaluation criterion pro projekt. **Vyřešeno (9/2026): vědomě bez číselné metriky — rychlost toolkitu pokrývá N4 (nová agenda = jen registrace) a developer study; metrika dev-days byla autorem odmítnuta.**
 
 ## Modernized shell with mini-app subsystem
 
