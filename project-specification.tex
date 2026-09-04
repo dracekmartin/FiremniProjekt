@@ -191,7 +191,7 @@ The description below reflects the current plan. The project runs inside the com
 \subsection{Functional requirements}
 \label{sec:fr}
 
-The requirements are grouped by project outcome and numbered for reference. Requirements marked \emph{(nice to have)} come last in each group and may be reduced under time pressure. The rest are essential.
+The requirements are grouped by project outcome and numbered for reference. All of them are essential.
 
 \medskip
 \noindent \textbf{Shell}
@@ -240,19 +240,19 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{L4} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
 \end{itemize}
 
-\noindent \textbf{Update mechanism}
+\noindent \textbf{Update mechanism.} An EDISON installation has two levels. The \emph{server installation} is one directory on the customer's server, next to the Caché backend. It holds the program files for the whole site, and updating it is a separate step: an authorized person downloads the new release from M-line and installs it into that directory (an installation can also do this automatically). The \emph{client installations} on the workstations then follow on their own: after login, each workstation compares its version with the server installation and, when it is behind, the update replaces its files and the shell starts again. So a release travels as plain files, from M-line to the customer's server and from there to every workstation. The chain has two known failures: it runs over plain HTTP with no way to switch to HTTPS, and a Caché-only patch sometimes makes the workstations re-download the client binaries. The project touches two parts of the chain: the coordination in the new shell (when to update and how to enforce it) and the download of release files to the customer server and to the workstations. Everything else, including the legacy clients' own update path, stays as it is.
 \begin{itemize}
-  \item \reqdef{U1} At startup the client compares its version with the server installation and, on a mismatch, enforces a mandatory update before letting the user in. The download and apply steps may be carried out by the existing update engine.
+  \item \reqdef{U1} After login the client compares its version with the server installation and, when it is behind, enforces a mandatory update: the shell closes, the files are replaced, and the shell starts again. The download and apply steps may be carried out by the existing update engine.
   \item \reqdef{U2} A runtime version guard rejects requests from stale clients, so client and server code never drift within a session. Server-only changes are tolerated by the version convention, as in the legacy system: a release marked as server-only does not force running clients out.
   \item \reqdef{U3} The download of release files (packages, executables, libraries) to the customer server and from there to the workstations is modernized so that it serves both the new and the legacy client.
   \item \reqdef{U4} The new update mechanism coexists with the legacy one: legacy clients on the same installation keep updating unchanged.
   \item \reqdef{U5} The client can passively notify the user that a newer release exists without forcing installation.
   \item \reqdef{U6} After an update, the shell shows the user what changed in the release. Before opening an agenda whose package changed since the user last saw the notes, the shell shows what changed there, and the user can dismiss the notes until they change again. At the beginning the notes come from the legacy source: text files shipped with each release. The eventual goal is to write and serve them from the company web, with no per-release files traveling with the version.
-  \item \reqdef{U7} The new download fixes two known failures of the legacy mechanism: it supports secure transport (HTTPS), and a Caché-only patch is picked up at the next start and never forces running clients out, unlike the legacy nightly update.
-  \item \reqdef{U8} While the server side of an installation is being updated, new logins are refused. The administrator can force the running clients out, and the users get a countdown, about a minute, to save their work.
-  \item \reqdef{U9} The company can pause the distribution of a release, and clients then behave as if no newer release existed.
-  \item \reqdef{U10} On a server installation, only an authorized user can start the update, and the update does not start while other users work with the system.
-  \item \reqdef{U11} \emph{(nice to have)} When the mandatory update cannot proceed, the user learns why in plain terms and the client exits in an orderly way.
+  \item \reqdef{U7} The new download fixes the two known failures of the legacy chain: it supports secure transport (HTTPS), and a Caché-only patch never makes the workstations re-download the client binaries.
+  \item \reqdef{U8} While the server side of an installation is being updated, new logins are refused.
+  \item \reqdef{U9} The administrator can force the running clients out, and the users get a countdown, about a minute, to save their work.
+  \item \reqdef{U10} The company can pause the distribution of a release, and clients then behave as if no newer release existed.
+  \item \reqdef{U11} On a server installation, only an authorized user can start the update, and the update does not start while other users work with the system.
 \end{itemize}
 
 \noindent \textbf{Toolkit.} The toolkit's users are developers, so the requirements below describe what it must offer them.
@@ -265,12 +265,11 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{T6} A documented usage guide and test patterns for future agenda implementations, including runnable mock implementations of the backend-access layer and a test runner for the Caché side, so agenda logic is testable on both stacks without a live installation.
   \item \reqdef{T7} Data lists can export their contents, and printing is available where the legacy client offers it.
   \item \reqdef{T8} Windows remember their position and size per user and company, the user can reset all window layouts to their defaults, and a window with unsaved changes asks for confirmation before it closes. All of this comes from the toolkit, not from each window.
-  \item \reqdef{T9} Client errors are reported automatically to the company's support portal, and the user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, narrower than the legacy behavior. The user can also send a report on their own, without waiting for an error.
-  \item \reqdef{T10} The client records which windows and controls are used and sends the usage events (window, control, time) to the backend, which aggregates them to help decide what to port next. The events carry no content of the user's work.
+  \item \reqdef{T9} Client errors are reported automatically to the company's support portal, through the portal's existing intake channel that the legacy client already uses. The project uses the channel, it does not build it. The user can add a description of what they were doing. A report can contain personal data (the user's identity, the content of a window), which is why the attached screenshots capture only the application's own windows, narrower than the legacy behavior. The user can also send a report on their own, without waiting for an error.
+  \item \reqdef{T10} The client records which windows and controls are used and sends the usage events (window, control, time) to the backend, which aggregates them in the customer's Caché to help decide what to port next. An existing mechanism already hands the aggregate over to M-line automatically when an update is installed, and the project uses it unchanged. The events carry no content of the user's work.
   \item \reqdef{T11} Every non-trivial window offers a support panel with the company's support channels and version information that identifies the window's context.
   \item \reqdef{T12} The client upgrade preserves stored user preferences. If the stored state is unknown or damaged, the client falls back to defaults.
   \item \reqdef{T13} The user can switch the theme and adjust the application font at runtime, the new-stack UI scales with the font, and the choice is shared by the M-line applications on the workstation. Legacy WinForms agendas keep their own look.
-  \item \reqdef{T14} \emph{(nice to have)} The shell can carry a company-specific color accent, as the legacy shell does, so that the user can tell a production installation from a test one.
 \end{itemize}
 
 \subsection{Non-Functional requirements}
@@ -327,7 +326,7 @@ The screens below show the proposed user interface of the shell.
 The solution consists of three cooperating parts, shown as containers in figure~\ref{fig:c4-container}:
 
 \begin{itemize}
-  \item \textbf{Modernized shell} -- the client application: login and session lifecycle, company selection, the module tree, launching agendas, and hosting mini-apps.
+  \item \textbf{Modernized shell} -- the client desktop application, the main EDISON window: login and session lifecycle, company selection, the module tree, launching agendas, and hosting mini-apps.
   \item \textbf{Shared toolkit} -- a library of reusable UI components, view-model infrastructure, theming, and the typed backend-access layer. Consumed by the shell, by TemplateDesigner, and by all future agenda implementations.
   \item \textbf{Legacy bridge} -- a backward-compatibility layer that hosts the existing WinForms agendas and passes them the established session and company context, so that the new shell can launch them without touching their source code. The layer is not trivial. Some agendas need specific exceptions in the host because of the way they manage their own windows and rights.
 \end{itemize}
@@ -497,11 +496,13 @@ The work is split into six milestones, each ending with something to demonstrate
 
 \noindent The academic deliverable consists of:
 \begin{itemize}
-  \item \textbf{Source code} of the modernized client shell, the supporting toolkit library, the demonstrative mini-app, the supporting test projects, and any internal tools modified or created during the project where the changes are substantial.
+  \item \textbf{Source code} realizing the requirements of section~\ref{sec:description}: the modernized client shell, the legacy bridge, the supporting toolkit library, the demonstrative mini-app, the new download of release files, the Caché code the project adds or changes (the shell's server side, the module tree definitions, the update coordination), the supporting test projects, and any internal tools modified or created during the project where the changes are substantial.
   \item \textbf{Developer documentation}: architectural overview, toolkit usage guide, and recommended development setup for future agenda implementations.
   \item \textbf{AI documentation}: patterns, guardrails, and observations collected during the project, delivered either as a standalone document or integrated with the developer documentation.
   \item \textbf{User documentation} for the new shell, written for end users and primarily highlighting new features and differences from the old shell.
 \end{itemize}
+
+Some parts of the system are not delivered, because the project only uses them: the Caché backend with the agenda logic, the legacy client and the agendas launched through the bridge, the existing low-level update engine if it stays unchanged (\req{U1}), M-line's central license archive, the release server that publishes releases, and the company's support portal, which receives the error reports and the telemetry and serves the news content. Where a requirement touches them, the delivered code implements the project's side of the interaction.
 
 The project is developed in M-line's private GitHub repositories, so the delivery is a snapshot rather than the full repositories:
 \begin{itemize}
