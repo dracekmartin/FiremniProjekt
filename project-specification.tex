@@ -60,7 +60,7 @@
 
 The author works for M-line software as a software engineer, primarily on the EDISON product line, integrated into the team's standard development practices. The ``academic team'' for the project is this M-line development team. M-line is a Czech software company developing the EDISON information system for the transportation and logistics domain (public transport, payroll, timetables, and many other related agendas) on top of an InterSystems Caché backend with a Windows desktop client. The company plans an incremental modernization of the legacy .NET Framework + WinForms client onto a more modern stack of .NET Core + WPF.
 
-The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and as a demonstration of the processes and patterns being introduced.
+The core goal of the project is to establish modern processes and an architectural foundation that subsequent in-house work will reuse. A concrete software piece -- a modernized client shell -- serves as both a working product and as a demonstration of the processes and patterns being introduced. The shell is a regular desktop application with a graphical interface: the main EDISON window that the user logs into, navigates the agendas from, and keeps open all day. The agendas are separate windows launched from it.
 
 \medskip
 \noindent The expected outcomes are those committed to in the approved project proposal. A few things shifted since the approval, most notably the licensing tool was taken out of the project. Section~\ref{sec:changes} lists the changes.
@@ -155,7 +155,7 @@ Figure~\ref{fig:c4-context} shows the system context. The author works inside th
 \section{Project description}
 \label{sec:description}
 
-\textbf{End users and functionality.} EDISON installations are operated primarily by Czech transportation and logistics companies, primarily public-transport providers. Daily users are back-office staff in roles such as dispatching, payroll administration, ticketing, and accounting. The system covers the operational lifecycle of a transport company through agendas corresponding to specific business processes (fleet operations, scheduling, payroll, ticketing, asset management, subsidies, accounting, reporting, etc.).
+\textbf{End users and functionality.} EDISON installations are operated primarily by Czech transportation and logistics companies, primarily public-transport providers. Daily users are back-office staff in roles such as dispatching, payroll administration, ticketing, and accounting. Each installation also has administrators: selected users at the customer who manage accounts and permissions and step in when a login limit, license, or update needs an intervention. The system covers the operational lifecycle of a transport company through agendas corresponding to specific business processes (fleet operations, scheduling, payroll, ticketing, asset management, subsidies, accounting, reporting, etc.).
 
 \medskip
 \noindent \textbf{Stakeholders and value.} The primary stakeholder is M-line software, the company developing and maintaining EDISON; the resulting foundation will be reused by in-house developers to migrate further agendas after the project ends. The secondary stakeholders are the customer organizations operating EDISON installations, who will benefit from the overall improvements in the development process (speed, testing) and will receive a more modern user experience.
@@ -205,19 +205,16 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{S7} Favorites and layouts persist per user and company, and the last used company per user. All of them are restored at the next login.
   \item \reqdef{S8} The shell handles the session lifecycle: inactivity and forced logout with a user-visible countdown, detection of connection loss, and orderly shutdown. Closing the shell warns the user that all open agenda windows will close, and one action closes all open windows at once.
   \item \reqdef{S9} The shell verifies client/server version compatibility before and during a session. A mismatch at startup triggers the mandatory update (\req{U1}), a mid-session mismatch asks the user to restart so that the update can run, and the shell refuses to operate only when the update cannot proceed.
-  \item \reqdef{S10} At first launch on an unconfigured workstation, the shell asks for the server connection, verifies it, and continues without a restart.
+  \item \reqdef{S10} At first launch the shell takes the server connection from the configuration file that the legacy installation already keeps next to the clients and distributes with updates (EDISONini.xml).
   \item \reqdef{S11} Users with backend-managed accounts can change their password in the shell, and the backend can require a password change at the next login.
   \item \reqdef{S12} The user can switch to a different user account at runtime, which closes open agenda windows first.
-  \item \reqdef{S13} The shell offers a desktop area where the user arranges shortcut tiles for modules and launches them, persisted per user and company (the desktop is itself a mini-app placed in the hosting area).
+  \item \reqdef{S13} The shell offers a ``desktop'' mini-app: a panel in the hosting area where the user arranges shortcut tiles for modules and launches them, persisted per user and company (figure~\ref{fig:mock-miniapps}).
   \item \reqdef{S14} The shell lists the running agendas and can bring any of them to the front, and launching an agenda that already runs focuses the existing window instead of starting a second copy.
   \item \reqdef{S15} Where the backend allows it, the shell signs the user in under their Windows identity without showing the login dialog.
   \item \reqdef{S16} The login screen can remember the user name and, where the backend permits it, the password, stored encrypted on the workstation.
   \item \reqdef{S17} Session status information (user, company, client version, license expiry) is always visible in the main window.
   \item \reqdef{S18} The inactivity limit is configured on the server, as in the legacy system, with an optional per-user override.
-  \item \reqdef{S19} \emph{(nice to have)} The user can mark one module as their startup module, and the shell opens it automatically after login.
-  \item \reqdef{S20} \emph{(nice to have)} Next to the favorites, the shell keeps an automatically maintained list of the user's most used modules.
-  \item \reqdef{S21} \emph{(nice to have)} Desktop shortcuts can start the shell and open a specific agenda directly.
-  \item \reqdef{S22} \emph{(nice to have)} A new server installation can be initialized with the new tooling: the company, the first administrator account, and the license import. Without this, the initialization stays a job for the legacy tools.
+  \item \reqdef{S19} The user can mark one module as their startup module, and the shell opens it automatically after login.
 \end{itemize}
 
 \noindent \textbf{Mini-apps}
@@ -226,7 +223,7 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{M2} Agendas opt in by implementing a defined mini-app interface through which they publish their views instead of drawing into the shell directly.
   \item \reqdef{M3} Mini-apps are chosen per user: each user adds and removes them in a settings window opened from the shell, and the choice persists per user and company. The one exception is the permanently visible news panel (\req{M6}).
   \item \reqdef{M4} A mini-app is offered only when its parent agenda is licensed and the user is permitted to use it.
-  \item \reqdef{M5} At least one demonstrative mini-app working over real agenda data is delivered.
+  \item \reqdef{M5} At least one demonstrative mini-app working over agenda data is delivered.
   \item \reqdef{M6} A permanently visible panel shows company news and announcements (releases, training and similar), and the user cannot remove it. Its content comes from the company's support portal, where M-line staff maintain it.
   \item \reqdef{M7} The overview panels of the legacy shell remain available as mini-apps through their existing server contract.
   \item \reqdef{M8} Open mini-apps can refresh their content automatically at a chosen interval. For the legacy panels this reloads the data prepared by a server task, and the recomputation stays on the server.
@@ -235,22 +232,19 @@ The requirements are grouped by project outcome and numbered for reference. Requ
   \item \reqdef{M11} The user's mini-app layout persists per user and company across sessions.
 \end{itemize}
 
-\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). Developers define which elements belong to which licensable feature, and the shell respects the license at login through the customer backend.
+\noindent \textbf{Licensing.} By licensing data we mean, per customer: the license itself (type and validity period), the purchased set of licensable features (modules and elements within them), and numeric limits (most importantly concurrent logins). Developers define which elements belong to which licensable feature, and the shell respects the license at login through the customer backend. A license is issued by M-line and reaches the installation automatically from M-line's central archive. It cannot be edited at the installation, only replaced by a newly issued one.
 \begin{itemize}
   \item \reqdef{L1} The shell respects the license: it hides unlicensed modules, shows the rejection of a login when the concurrent-user limit is exceeded, and shows non-blocking warnings for approaching expiry and, where the backend reports it, for approaching numeric limits. After the license expires, the installation stays read-only, as in the legacy system.
   \item \reqdef{L2} The module tree definitions (which elements belong to which licensable feature, where a module sits in the tree) move from the XML files distributed with the client into the Caché backend. Developers maintain them as Caché code in the development environment, and the definitions reach customer installations with releases like any other code, replacing the manual XML maintenance. The migration preserves the semantics of the existing definitions (hidden and internal-only entries, input parameters, window defaults), and the tools that read the XML keep working until they are replaced. During the transition one of the two forms is generated from the other, so that no definition is maintained twice.
   \item \reqdef{L3} When the concurrent-login limit is reached, an administrator can view the active sessions, force one out, and sign in.
   \item \reqdef{L4} An installation without a valid license still lets an administrator in far enough to import a new one, and administrator rights never bypass the license.
-  \item \reqdef{L5} \emph{(nice to have)} The license can be refreshed at runtime without restarting the shell.
-  \item \reqdef{L6} \emph{(nice to have)} An administrator can tell new-client sessions from legacy ones in the administration views.
-  \item \reqdef{L7} \emph{(nice to have)} Administrative interventions (forced logouts, license and permission changes) leave an audit record.
 \end{itemize}
 
 \noindent \textbf{Update mechanism}
 \begin{itemize}
-  \item \reqdef{U1} At startup the client compares its version with the server installation and, on a mismatch, enforces a mandatory update before letting the user in. The download and apply steps may be carried out by the existing update engine. Replacing it is possible but not promised.
+  \item \reqdef{U1} At startup the client compares its version with the server installation and, on a mismatch, enforces a mandatory update before letting the user in. The download and apply steps may be carried out by the existing update engine.
   \item \reqdef{U2} A runtime version guard rejects requests from stale clients, so client and server code never drift within a session. Server-only changes are tolerated by the version convention, as in the legacy system: a release marked as server-only does not force running clients out.
-  \item \reqdef{U3} The download of release files (packages, executables, libraries) to the customer server and from there to the workstations is modernized so that it serves both clients. Building and publishing a release stays as it is.
+  \item \reqdef{U3} The download of release files (packages, executables, libraries) to the customer server and from there to the workstations is modernized so that it serves both the new and the legacy client.
   \item \reqdef{U4} The new update mechanism coexists with the legacy one: legacy clients on the same installation keep updating unchanged.
   \item \reqdef{U5} The client can passively notify the user that a newer release exists without forcing installation.
   \item \reqdef{U6} After an update, the shell shows the user what changed in the release. Before opening an agenda whose package changed since the user last saw the notes, the shell shows what changed there, and the user can dismiss the notes until they change again. At the beginning the notes come from the legacy source: text files shipped with each release. The eventual goal is to write and serve them from the company web, with no per-release files traveling with the version.
@@ -515,7 +509,7 @@ The project is developed in M-line's private GitHub repositories, so the deliver
   \item A document specifying files that were also developed by others, describing what was done by the author
   \item An export of the git history of the author, using git log
 \end{itemize}
-The academic supervisor, opponent, and Committee receive access to the above on request. A demo of the project will also be made accessible upon request, and the functionality will be demonstrated at the defense. M-line software s.r.o. has approved the project scope and consents to its academic delivery and presentation as described here and in the proposal.
+The academic supervisor, opponent, and Committee receive access to the above on request. A demo of the project will also be made accessible upon request, and the functionality will be demonstrated at the defense. The demo runs on a development installation with a test company and the existing legacy agendas, so launching them through the bridge (\req{S6}) can be shown live. M-line software s.r.o. has approved the project scope and consents to its academic delivery and presentation as described here and in the proposal.
 
 \section{Time Schedule}
 \label{sec:schedule}
